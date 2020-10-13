@@ -10,7 +10,7 @@
 #include "gf3d_model.h"
 #include "gf3d_camera.h"
 #include "gf3d_texture.h"
-#include "gf3d_entitiy.h"
+#include "gf3d_entity.h"
 
 int main(int argc,char *argv[])
 {
