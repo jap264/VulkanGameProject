@@ -10,6 +10,7 @@
 #include "gf3d_model.h"
 #include "gf3d_camera.h"
 #include "gf3d_texture.h"
+#include "gf3d_entitiy.h"
 
 int main(int argc,char *argv[])
 {
@@ -42,12 +43,13 @@ int main(int argc,char *argv[])
         0,                      //fullscreen
         validate                //validation
     );
-    
 	slog_sync();
 
+	
+	gf3d_entity_init(1024);
+
     // main game loop
-    slog("gf3d main loop begin");
-	slog_sync();
+	slog("gf3d main loop begin");
 	model = gf3d_model_load("dino");
 	gfc_matrix_identity(modelMat);
 	model2 = gf3d_model_load("dino");
