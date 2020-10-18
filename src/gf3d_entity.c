@@ -58,7 +58,7 @@ Entity  *gf3d_entity_new()
 	int i;
 	for (i = 0; i < gf3d_entity.entity_count; i++)
 	{
-		if (gf3d_entity.entity_list[i]._inuse)
+		if (!gf3d_entity.entity_list[i]._inuse)
 		{
 			gf3d_entity.entity_list[i]._inuse = 1;
 			gfc_matrix_identity(gf3d_entity.entity_list[i].modelMatrix);
@@ -67,6 +67,23 @@ Entity  *gf3d_entity_new()
 	}
 	slog("Failed to provide new entity, no unused slots");
 	return NULL;
+}
+
+void gf3d_entity_think(Entity *self)
+{
+	if (!self)return;
+	if (!self->think)return; //no think function to call
+	self->think(self);
+}
+
+void gf3d_entity_think_all()
+{
+	int i;
+	for (i = 0; i < gf3d_entity.entity_count; i++)
+	{
+		if (!gf3d_entity.entity_list[i]._inuse) continue;
+		gf3d_entity_think(&gf3d_entity.entity_list[i]);
+	}
 }
 
 void gf3d_entity_draw(Entity *self, Uint32 bufferFrame, VkCommandBuffer commandBuffer)
@@ -80,9 +97,9 @@ void gf3d_entity_draw_all(Uint32 bufferFrame, VkCommandBuffer commandBuffer)
 	int i;
 	for (i = 0; i < gf3d_entity.entity_count; i++)
 	{
-		if (gf3d_entity.entity_list[i]._inuse) continue;
+		if (!gf3d_entity.entity_list[i]._inuse) continue;
 		gf3d_entity_draw(&gf3d_entity.entity_list[i], bufferFrame, commandBuffer);
 	}
 }
 
-/*eol@oef*/
+/*eol@eof*/
