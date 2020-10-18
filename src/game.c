@@ -12,10 +12,12 @@
 #include "gf3d_texture.h"
 #include "gf3d_entity.h"
 
+void dino_think(Entity *self); 
+
 int main(int argc,char *argv[])
 {
     int done = 0;
-    int a;
+    int a, i;
     Uint8 validate = 0;
     const Uint8 * keys;
     Uint32 bufferFrame = 0;
@@ -24,7 +26,7 @@ int main(int argc,char *argv[])
     //Matrix4 modelMat;
     //Model *model2;
     //Matrix4 modelMat2;
-	Entity *ent1 = NULL;
+	Entity *ent = NULL;
 
     
     for (a = 1; a < argc;a++)
@@ -53,12 +55,20 @@ int main(int argc,char *argv[])
     // main game loop
 	slog("gf3d main loop begin");
 
-	ent1 = gf3d_entity_new();
+		ent = gf3d_entity_new();
 
-	if (ent1)
-	{
-		ent1->model = gf3d_model_load("dino");
-	}
+		ent->model = gf3d_model_load("dino");
+		ent->think = dino_think;
+		gfc_matrix_make_translation(
+			ent->modelMatrix,
+			vector3d(gfc_crandom() * 5, gfc_crandom() * 5, gfc_crandom() * 5));
+		gfc_matrix_rotate(
+			ent->modelMatrix,
+			ent->modelMatrix,
+			gfc_crandom()*0.01,
+			vector3d(gfc_crandom(), gfc_crandom(), gfc_crandom()));
+	
+
 	
 	/*model = gf3d_model_load("dino");
 	gfc_matrix_identity(modelMat);
@@ -73,13 +83,9 @@ int main(int argc,char *argv[])
         SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
         //update game things here
-        
-        gf3d_vgraphics_rotate_camera(0.001);
-        gfc_matrix_rotate(
-            ent1->modelMatrix,
-            ent1->modelMatrix,
-            0.002,
-            vector3d(1,0,0));
+		
+		gf3d_entity_think_all();
+		
         /*gfc_matrix_rotate(
             modelMat2,
             modelMat2,
@@ -110,4 +116,13 @@ int main(int argc,char *argv[])
     return 0;
 }
 
+void dino_think(Entity *self)
+{
+		gf3d_vgraphics_rotate_camera(0.001);
+		gfc_matrix_rotate(
+			self->modelMatrix,
+			self->modelMatrix,
+			0.002,
+			vector3d(1, 0, 0));
+}
 /*eol@eof*/

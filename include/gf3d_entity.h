@@ -45,6 +45,11 @@ void gf3d_entity_draw(Entity *self, Uint32 bufferFrame, VkCommandBuffer commandB
 **/
 void gf3d_entity_draw_all(Uint32 bufferFrame, VkCommandBuffer commandBuffer);
 
+/*
+ *@brief call think function for all active entities
+*/
+void gf3d_entity_think_all();
+
 /**
  *@brief free an entity so it can be reused by the system
  *@param self the entity to free
