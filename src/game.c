@@ -59,6 +59,8 @@ int main(int argc,char *argv[])
 
 		ent->model = gf3d_model_load("dino");
 		ent->think = dino_think;
+
+		/*
 		gfc_matrix_make_translation(
 			ent->modelMatrix,
 			vector3d(gfc_crandom() * 5, gfc_crandom() * 5, gfc_crandom() * 5));
@@ -67,7 +69,7 @@ int main(int argc,char *argv[])
 			ent->modelMatrix,
 			gfc_crandom()*0.01,
 			vector3d(gfc_crandom(), gfc_crandom(), gfc_crandom()));
-	
+		*/
 
 	
 	/*model = gf3d_model_load("dino");
@@ -84,7 +86,7 @@ int main(int argc,char *argv[])
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
         //update game things here
 		
-		gf3d_entity_think_all();
+		gf3d_entity_think_all(); //CALLS ALL THINK FUNCTIONS (UNCOMMENT HERE)
 		
         /*gfc_matrix_rotate(
             modelMat2,
@@ -118,11 +120,69 @@ int main(int argc,char *argv[])
 
 void dino_think(Entity *self)
 {
-		gf3d_vgraphics_rotate_camera(0.001);
+		/*gf3d_vgraphics_rotate_camera(0.001);
 		gfc_matrix_rotate(
 			self->modelMatrix,
 			self->modelMatrix,
 			0.002,
 			vector3d(1, 0, 0));
+		*/
+		const Uint8 * keys;
+		SDL_PumpEvents();
+		keys = SDL_GetKeyboardState(NULL);
+		if (keys[SDL_SCANCODE_W])
+		{
+			self->position.y += 0.05;
+			slog("y position +");
+		}
+
+		if (keys[SDL_SCANCODE_A])
+		{
+			self->position.x -= 0.05;
+			slog("x position -");
+		}
+
+		if (keys[SDL_SCANCODE_S])
+		{
+			self->position.y -= 0.05;
+			slog("y position -");
+		}
+
+		if (keys[SDL_SCANCODE_D])
+		{
+			self->position.x += 0.05;
+			slog("x position +");
+		}
+		
+		gfc_matrix_make_translation(
+			self->modelMatrix,
+			self->position
+		);
 }
+
+void cube_think(Entity self)
+{
+
+}
+
+void sphere_think(Entity self)
+{
+
+}
+
+void brick_think(Entity self)
+{
+
+}
+
+void cone_think(Entity self)
+{
+
+}
+
+void cylinder_think(Entity self)
+{
+
+}
+
 /*eol@eof*/

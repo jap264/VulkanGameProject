@@ -14,6 +14,7 @@ typedef struct Entity_S
 {
 	Uint8		_inuse;   /**<flag to make sure entities are not re-assigned while active*/
 	Model		*model;
+	Vector3D	position;
 	Matrix4		modelMatrix;
 	void		(*think)(struct Entity_S *self);
 } Entity;
