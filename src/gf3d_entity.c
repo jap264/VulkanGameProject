@@ -102,4 +102,14 @@ void gf3d_entity_draw_all(Uint32 bufferFrame, VkCommandBuffer commandBuffer)
 	}
 }
 
+Vector3D gf3d_entity_get_position(Entity *entity)
+{
+	return entity->position;
+}
+
+void gf3d_entity_set_position(Entity *entity, Vector3D position)
+{
+	entity->position = position;
+}
+
 /*eol@eof*/

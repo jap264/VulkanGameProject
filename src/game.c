@@ -12,7 +12,16 @@
 #include "gf3d_texture.h"
 #include "gf3d_entity.h"
 
-void dino_think(Entity *self); 
+void player_think(Entity *self);
+void cube_think(Entity *self);
+Entity *player = NULL;
+
+/**
+*@brief have an entity follow another entity
+*@param self the entity that is following
+*@param other the entity that is being followed
+*/
+void follow(Entity *self, Entity *other);
 
 int main(int argc,char *argv[])
 {
@@ -26,7 +35,7 @@ int main(int argc,char *argv[])
     //Matrix4 modelMat;
     //Model *model2;
     //Matrix4 modelMat2;
-	Entity *ent = NULL;
+	Entity *cube = NULL;
 
     
     for (a = 1; a < argc;a++)
@@ -55,10 +64,14 @@ int main(int argc,char *argv[])
     // main game loop
 	slog("gf3d main loop begin");
 
-		ent = gf3d_entity_new();
+		player = gf3d_entity_new();
+		cube = gf3d_entity_new();
 
-		ent->model = gf3d_model_load("dino");
-		ent->think = dino_think;
+		player->model = gf3d_model_load("dino");
+		player->think = player_think;
+
+		cube->model = gf3d_model_load("cube");
+		cube->think = cube_think;
 
 		/*
 		gfc_matrix_make_translation(
@@ -118,10 +131,10 @@ int main(int argc,char *argv[])
     return 0;
 }
 
-void dino_think(Entity *self)
+void player_think(Entity *self)
 {
-		/*gf3d_vgraphics_rotate_camera(0.001);
-		gfc_matrix_rotate(
+		//gf3d_vgraphics_rotate_camera(0.001);
+		/*gfc_matrix_rotate(
 			self->modelMatrix,
 			self->modelMatrix,
 			0.002,
@@ -160,29 +173,69 @@ void dino_think(Entity *self)
 		);
 }
 
-void cube_think(Entity self)
+void follow(Entity *self, Entity *other)
 {
+	if (!self || !other) return;
 
+	if (self->position.y > other->position.y)
+	{
+		self->position.y -= 0.015;
+		slog("following -y");
+	}
+	
+	if (self->position.y < other->position.y)
+	{
+		self->position.y += 0.015;
+		slog("following +y");
+	}
+	if (self->position.x > other->position.x)
+	{
+		self->position.x -= 0.015;
+		slog("following -x");
+	}
+	
+	if (self->position.x < other->position.x)
+	{
+		self->position.x += 0.015;
+		slog("following +x");
+	}
+
+	gfc_matrix_make_translation(
+		self->modelMatrix,
+		self->position
+	);
 }
 
-void sphere_think(Entity self)
+void cube_think(Entity *self)
 {
-
+	if (!self) return;
+	follow(self, player);
+	gfc_matrix_rotate(
+		self->modelMatrix,
+		self->modelMatrix,
+		0.002,
+		vector3d(1, 0, 0));
+	
 }
 
-void brick_think(Entity self)
+void sphere_think(Entity *self)
 {
-
+	if (!self) return;
 }
 
-void cone_think(Entity self)
+void brick_think(Entity *self)
 {
-
+	if (!self) return;
 }
 
-void cylinder_think(Entity self)
+void cone_think(Entity *self)
 {
+	if (!self) return;
+}
 
+void cylinder_think(Entity *self)
+{
+	if (!self) return;
 }
 
 /*eol@eof*/

@@ -58,4 +58,16 @@ void gf3d_entity_think_all();
 **/
 void gf3d_entity_free(Entity *entity);
 
+/**
+ *@brief returns the position of an entity
+ *@param entity the entity possessing the position
+*/
+Vector3D gf3d_entity_get_position(Entity *entity);
+
+/**
+ *@brief sets the position of an entity
+ *@param entity the entity to be given a new position
+ *@param position new position to be given
+**/
+void gf3d_entity_set_position(Entity *entity, Vector3D position);
 #endif
