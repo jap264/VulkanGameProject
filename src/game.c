@@ -15,6 +15,12 @@
 void player_think(Entity *self);
 void cube_think(Entity *self);
 Entity *player = NULL;
+int delayD = 0;
+int delaySS = 0; 
+int delayBS = 0; 
+int jump = 0;
+int sprintCount = 0;
+int sprintCheck = 0;
 
 /**
 *@brief have an entity follow another entity
@@ -26,7 +32,7 @@ void follow(Entity *self, Entity *other);
 int main(int argc,char *argv[])
 {
     int done = 0;
-    int a, i;
+	int a, i;
     Uint8 validate = 0;
     const Uint8 * keys;
     Uint32 bufferFrame = 0;
@@ -133,44 +139,160 @@ int main(int argc,char *argv[])
 
 void player_think(Entity *self)
 {
-		//gf3d_vgraphics_rotate_camera(0.001);
-		/*gfc_matrix_rotate(
-			self->modelMatrix,
-			self->modelMatrix,
-			0.002,
-			vector3d(1, 0, 0));
-		*/
-		const Uint8 * keys;
-		SDL_PumpEvents();
-		keys = SDL_GetKeyboardState(NULL);
-		if (keys[SDL_SCANCODE_W])
-		{
-			self->position.y += 0.05;
-			slog("y position +");
-		}
+	//gf3d_vgraphics_rotate_camera(0.001);
+	/*gfc_matrix_rotate(
+		self->modelMatrix,
+		self->modelMatrix,
+		0.002,
+		vector3d(1, 0, 0));
+	*/
 
-		if (keys[SDL_SCANCODE_A])
-		{
-			self->position.x -= 0.05;
-			slog("x position -");
-		}
+	if (delayD > 0)
+	{
+		delayD--;
+		//slog("%i", delayD);
+	}
 
-		if (keys[SDL_SCANCODE_S])
-		{
-			self->position.y -= 0.05;
-			slog("y position -");
-		}
+	if (delayBS > 0)
+	{
+		delayBS--;
+		//slog("%i", delayBS);
+	}
 
-		if (keys[SDL_SCANCODE_D])
+	if (delaySS > 0)
+	{
+		delaySS--;
+		//slog("%i", delaySS);
+	}
+
+	if (jump == 2 && self->position.z < 15)
+	{
+		self->position.z += 0.1;
+	}
+
+	if (self->position.z >= 15)
+	{
+		jump = 1;
+	}
+
+	if (self->position.z > 0 && jump == 1)
+	{
+		self->position.z -= 0.02;
+	}
+
+	if (self->position.z <= 0)
+	{
+		self->position.z = 0;
+		jump = 0;
+	}
+
+	if (sprintCount >= 5000)
+	{
+		sprintCheck = 1;
+	}
+
+	if (sprintCheck == 1)
+	{
+		sprintCount--;
+		if (sprintCount <= 0)
 		{
-			self->position.x += 0.05;
-			slog("x position +");
+			sprintCheck = 0;
 		}
-		
-		gfc_matrix_make_translation(
-			self->modelMatrix,
-			self->position
-		);
+	}
+
+	const Uint8 *keys;
+	SDL_PumpEvents();
+	keys = SDL_GetKeyboardState(NULL);
+	if (keys[SDL_SCANCODE_W])
+	{
+		self->position.y += 0.05;
+		slog("y position +");
+	}
+
+	if (keys[SDL_SCANCODE_A])
+	{
+		self->position.x -= 0.05;
+		slog("x position -");
+	}
+
+	if (keys[SDL_SCANCODE_S])
+	{
+		self->position.y -= 0.05;
+		slog("y position -");
+	}
+
+	if (keys[SDL_SCANCODE_D])
+	{
+		self->position.x += 0.05;
+		slog("x position +");
+	}
+	
+	if (keys[SDL_SCANCODE_W] && keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0)
+	{
+		self->position.y += 0.08;
+		sprintCount++;
+		slog("sprinting");
+	}
+
+	if (keys[SDL_SCANCODE_A] && keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0)
+	{
+		self->position.x -= 0.08;
+		sprintCount++;
+		slog("sprinting");
+	}
+
+	if (keys[SDL_SCANCODE_S] && keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0)
+	{
+		self->position.y -= 0.05;
+		sprintCount++;
+		slog("sprinting");
+	}
+
+	if (keys[SDL_SCANCODE_D] && keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0)
+	{
+		self->position.x += 0.08;
+		sprintCount++;
+		slog("sprinting");
+	}
+	if (keys[SDL_SCANCODE_SPACE] && self->position.z == 0 && jump == 0)
+	{
+		//self->position.z += 15;
+		jump = 2;
+		slog("jumping");
+	}
+
+	if (keys[SDL_SCANCODE_Q] && delayD == 0)
+	{
+		delayD = 2000;
+		self->position.y += 30;
+		slog("dashed");
+	}
+
+	if (keys[SDL_SCANCODE_X] && delayBS == 0)
+	{
+		delayBS = 2000;
+		self->position.y -= 20;
+		slog("backstep");
+	}
+
+	if (keys[SDL_SCANCODE_A] && keys[SDL_SCANCODE_LALT] && delaySS == 0)
+	{
+		delaySS = 2000;
+		self->position.x -= 15;
+		slog("sidestep");
+	}
+
+	if (keys[SDL_SCANCODE_D] && keys[SDL_SCANCODE_LALT] && delaySS == 0)
+	{
+		delaySS = 2000;
+		self->position.x += 15;
+		slog("sidestep");
+	}
+
+	gfc_matrix_make_translation(
+		self->modelMatrix,
+		self->position
+	);
 }
 
 void follow(Entity *self, Entity *other)
@@ -180,24 +302,24 @@ void follow(Entity *self, Entity *other)
 	if (self->position.y > other->position.y)
 	{
 		self->position.y -= 0.015;
-		slog("following -y");
+		//slog("following -y");
 	}
 	
 	if (self->position.y < other->position.y)
 	{
 		self->position.y += 0.015;
-		slog("following +y");
+		//slog("following +y");
 	}
 	if (self->position.x > other->position.x)
 	{
 		self->position.x -= 0.015;
-		slog("following -x");
+		//slog("following -x");
 	}
 	
 	if (self->position.x < other->position.x)
 	{
 		self->position.x += 0.015;
-		slog("following +x");
+		//slog("following +x");
 	}
 
 	gfc_matrix_make_translation(
@@ -206,6 +328,12 @@ void follow(Entity *self, Entity *other)
 	);
 }
 
+void cube_spawn()
+{
+	Entity *new = NULL;
+
+	
+}
 void cube_think(Entity *self)
 {
 	if (!self) return;
