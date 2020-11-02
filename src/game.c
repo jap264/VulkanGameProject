@@ -16,8 +16,13 @@ void player_think(Entity *self);
 void cube_think(Entity *self);
 Entity *player = NULL;
 int delayD = 0;
-int delaySS = 0; 
-int delayBS = 0; 
+int delaySS = 0;
+int delayJump = 0;
+double beforeD;
+double beforeSS;
+int dash = 0;
+int sidestep1 = 0;
+int sidestep2 = 0;
 int jump = 0;
 int sprintCount = 0;
 int sprintCheck = 0;
@@ -153,37 +158,16 @@ void player_think(Entity *self)
 		//slog("%i", delayD);
 	}
 
-	if (delayBS > 0)
-	{
-		delayBS--;
-		//slog("%i", delayBS);
-	}
-
 	if (delaySS > 0)
 	{
 		delaySS--;
 		//slog("%i", delaySS);
 	}
-
-	if (jump == 2 && self->position.z < 15)
+	
+	if (delayJump > 0)
 	{
-		self->position.z += 0.1;
-	}
-
-	if (self->position.z >= 15)
-	{
-		jump = 1;
-	}
-
-	if (self->position.z > 0 && jump == 1)
-	{
-		self->position.z -= 0.02;
-	}
-
-	if (self->position.z <= 0)
-	{
-		self->position.z = 0;
-		jump = 0;
+		delayJump--;
+		//slog("%i", delaySS);
 	}
 
 	if (sprintCount >= 5000)
@@ -227,66 +211,127 @@ void player_think(Entity *self)
 		slog("x position +");
 	}
 	
-	if (keys[SDL_SCANCODE_W] && keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0)
+	if (keys[SDL_SCANCODE_W] && keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0 && self->position.z == 0)
 	{
 		self->position.y += 0.08;
 		sprintCount++;
 		slog("sprinting");
 	}
 
-	if (keys[SDL_SCANCODE_A] && keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0)
+	if (keys[SDL_SCANCODE_A] && keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0 && self->position.z == 0)
 	{
 		self->position.x -= 0.08;
 		sprintCount++;
 		slog("sprinting");
 	}
 
-	if (keys[SDL_SCANCODE_S] && keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0)
+	if (keys[SDL_SCANCODE_S] && keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0 && self->position.z == 0)
 	{
 		self->position.y -= 0.05;
 		sprintCount++;
 		slog("sprinting");
 	}
 
-	if (keys[SDL_SCANCODE_D] && keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0)
+	if (keys[SDL_SCANCODE_D] && keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0 && self->position.z == 0)
 	{
 		self->position.x += 0.08;
 		sprintCount++;
 		slog("sprinting");
 	}
-	if (keys[SDL_SCANCODE_SPACE] && self->position.z == 0 && jump == 0)
+
+	if (keys[SDL_SCANCODE_SPACE] && self->position.z == 0 && jump == 0 && delayJump == 0)
 	{
 		//self->position.z += 15;
 		jump = 2;
 		slog("jumping");
 	}
 
-	if (keys[SDL_SCANCODE_Q] && delayD == 0)
+	if (jump == 2 && self->position.z < 15)
 	{
-		delayD = 2000;
-		self->position.y += 30;
+		self->position.z += 0.1;
+	}
+
+	if (self->position.z >= 15)
+	{
+		jump = 1;
+		delayJump = 4500;
+	}
+
+	if (self->position.z > 0 && jump == 1)
+	{
+		if (keys[SDL_SCANCODE_SPACE])
+		{
+			self->position.z -= 0.008;
+		}
+		else
+		{
+			self->position.z -= 0.015;
+		}
+	}
+
+	if (self->position.z <= 0)
+	{
+		self->position.z = 0;
+		jump = 0;
+	}
+
+	if (keys[SDL_SCANCODE_F] && delayD == 0)
+	{
+		delayD = 3000;
+		dash = 1;
+		beforeD = self->position.y;
+		//self->position.y += 30;
 		slog("dashed");
 	}
-
-	if (keys[SDL_SCANCODE_X] && delayBS == 0)
+	
+	if (dash == 1 && ((self->position.y - beforeD) < 30))
 	{
-		delayBS = 2000;
-		self->position.y -= 20;
-		slog("backstep");
+		self->position.y += 0.1;
 	}
 
-	if (keys[SDL_SCANCODE_A] && keys[SDL_SCANCODE_LALT] && delaySS == 0)
+	if (self->position.y - beforeD >= 30)
+	{
+		dash = 0;
+	}
+	
+	//if (keys[SDL_SCANCODE_A] && keys[SDL_SCANCODE_LALT]) slog("%i", delaySS);
+
+	if (keys[SDL_SCANCODE_Q] && delaySS == 0)
 	{
 		delaySS = 2000;
-		self->position.x -= 15;
-		slog("sidestep");
+		sidestep1 = 1;
+		beforeSS = self->position.x;
+		//self->position.x -= 15;
+		slog("sidestep1");
 	}
 
-	if (keys[SDL_SCANCODE_D] && keys[SDL_SCANCODE_LALT] && delaySS == 0)
+	if (sidestep1 == 1 && ((self->position.x - beforeSS) > -15))
+	{
+		self->position.x -= 0.1;
+	}
+
+	if (self->position.x - beforeSS <= -15)
+	{
+		sidestep1 = 0;
+	}
+
+	if (keys[SDL_SCANCODE_E] && delaySS == 0)
 	{
 		delaySS = 2000;
-		self->position.x += 15;
-		slog("sidestep");
+		sidestep2 = 1;
+		beforeSS = self->position.x;
+		//self->position.x += 15;
+		slog("sidestep2");
+	}
+
+	if (sidestep2 == 1 && ((self->position.x - beforeSS) < 15))
+	{
+		self->position.x += 0.1;
+	}
+
+	if (self->position.x - beforeSS >= 15)
+	{
+		sidestep2 = 0;
 	}
 
 	gfc_matrix_make_translation(
