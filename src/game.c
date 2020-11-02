@@ -14,6 +14,7 @@
 
 void player_think(Entity *self);
 void cube_think(Entity *self);
+void sphere_think(Entity *self);
 Entity *player = NULL;
 int delayD = 0;
 int delaySS = 0;
@@ -24,15 +25,9 @@ int dash = 0;
 int sidestep1 = 0;
 int sidestep2 = 0;
 int jump = 0;
+int jumping = 0;
 int sprintCount = 0;
 int sprintCheck = 0;
-
-/**
-*@brief have an entity follow another entity
-*@param self the entity that is following
-*@param other the entity that is being followed
-*/
-void follow(Entity *self, Entity *other);
 
 int main(int argc,char *argv[])
 {
@@ -75,15 +70,16 @@ int main(int argc,char *argv[])
     // main game loop
 	slog("gf3d main loop begin");
 
-		player = gf3d_entity_new();
-		cube = gf3d_entity_new();
+	player = gf3d_entity_new();
+	cube = gf3d_entity_new();
 
-		player->model = gf3d_model_load("dino");
-		player->think = player_think;
+	player->model = gf3d_model_load("dino");
+	player->think = player_think;
 
-		cube->model = gf3d_model_load("cube");
-		cube->think = cube_think;
+	cube->model = gf3d_model_load("cube");
+	cube->think = sphere_think;
 
+	gf3d_camera_set_position(player->position);
 		/*
 		gfc_matrix_make_translation(
 			ent->modelMatrix,
@@ -112,6 +108,8 @@ int main(int argc,char *argv[])
 		
 		gf3d_entity_think_all(); //CALLS ALL THINK FUNCTIONS (UNCOMMENT HERE)
 		
+		if (keys[SDL_SCANCODE_LEFT]) gf3d_vgraphics_rotate_camera(0.002);
+		if (keys[SDL_SCANCODE_RIGHT]) gf3d_vgraphics_rotate_camera(-0.002);
         /*gfc_matrix_rotate(
             modelMat2,
             modelMat2,
@@ -382,18 +380,91 @@ void cube_spawn()
 void cube_think(Entity *self)
 {
 	if (!self) return;
-	follow(self, player);
+	//follow(self, player);
+	
+	if (self->position.y > player->position.y)
+	{
+		self->position.y -= 0.015;
+		//slog("following -y");
+	}
+
+	if (self->position.y < player->position.y)
+	{
+		self->position.y += 0.015;
+		//slog("following +y");
+	}
+	if (self->position.x > player->position.x)
+	{
+		self->position.x -= 0.015;
+		//slog("following -x");
+	}
+
+	if (self->position.x < player->position.x)
+	{
+		self->position.x += 0.015;
+		//slog("following +x");
+	}
+
+	gfc_matrix_make_translation(
+		self->modelMatrix,
+		self->position);
+	
 	gfc_matrix_rotate(
 		self->modelMatrix,
 		self->modelMatrix,
 		0.002,
 		vector3d(1, 0, 0));
-	
 }
 
 void sphere_think(Entity *self)
 {
 	if (!self) return;
+	//follow(self, player);
+	
+	if (self->position.y > player->position.y)
+	{
+		self->position.y -= 0.015;
+		//slog("following -y");
+	}
+
+	if (self->position.y < player->position.y)
+	{
+		self->position.y += 0.015;
+		//slog("following +y");
+	}
+	if (self->position.x > player->position.x)
+	{
+		self->position.x -= 0.015;
+		//slog("following -x");
+	}
+
+	if (self->position.x < player->position.x)
+	{
+		self->position.x += 0.015;
+		//slog("following +x");
+	}
+
+	if (jumping == 0 && self->position.z <= 10) 
+	{
+		self->position.z += 0.005;
+	}
+
+	if (self->position.z > 10)
+	{
+		jumping = 1;
+		//slog("%i", jumping);
+	}
+
+	if (jumping == 1 && self->position.z > -5)
+	{
+		self->position.z -= 0.005;
+	}
+
+	if (self->position.z < -5) jumping = 0;
+
+	gfc_matrix_make_translation(
+		self->modelMatrix,
+		self->position);
 }
 
 void brick_think(Entity *self)
@@ -404,6 +475,11 @@ void brick_think(Entity *self)
 void cone_think(Entity *self)
 {
 	if (!self) return;
+	gfc_matrix_rotate(
+		self->modelMatrix,
+		self->modelMatrix,
+		0.002,
+		vector3d(0, 1, 0));
 }
 
 void cylinder_think(Entity *self)
