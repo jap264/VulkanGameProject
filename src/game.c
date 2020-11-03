@@ -12,27 +12,12 @@
 #include "gf3d_texture.h"
 #include "gf3d_entity.h"
 
-void player_think(Entity *self);
-void cube_think(Entity *self);
-void sphere_think(Entity *self);
-Entity *player = NULL;
-int delayD = 0;
-int delaySS = 0;
-int delayJump = 0;
-double beforeD;
-double beforeSS;
-int dash = 0;
-int sidestep1 = 0;
-int sidestep2 = 0;
-int jump = 0;
-int jumping = 0;
-int sprintCount = 0;
-int sprintCheck = 0;
+#include "player.h"
 
 int main(int argc,char *argv[])
 {
     int done = 0;
-	int a, i;
+	int a;
     Uint8 validate = 0;
     const Uint8 * keys;
     Uint32 bufferFrame = 0;
@@ -41,8 +26,12 @@ int main(int argc,char *argv[])
     //Matrix4 modelMat;
     //Model *model2;
     //Matrix4 modelMat2;
+
+	Entity *playerEnt = NULL;
+	Player *player;
 	Entity *cube = NULL;
 
+	float rotation = 0;
     
     for (a = 1; a < argc;a++)
     {
@@ -69,17 +58,21 @@ int main(int argc,char *argv[])
 
     // main game loop
 	slog("gf3d main loop begin");
+	
+	player_init();
+	player = get_player();
+	playerEnt = get_player_entity();
+	//cube = gf3d_entity_new();
 
-	player = gf3d_entity_new();
-	cube = gf3d_entity_new();
+	playerEnt->model = gf3d_model_load("dino");
+	playerEnt->think = player_think;
 
-	player->model = gf3d_model_load("dino");
-	player->think = player_think;
+	gf3d_vgraphics_rotate_camera(-0.4, 1);
 
-	cube->model = gf3d_model_load("cube");
-	cube->think = sphere_think;
+	//cube->model = gf3d_model_load("cube");
+	//cube->think = sphere_think;
 
-	gf3d_camera_set_position(player->position);
+	//gf3d_camera_set_position(player->position);
 		/*
 		gfc_matrix_make_translation(
 			ent->modelMatrix,
@@ -108,8 +101,11 @@ int main(int argc,char *argv[])
 		
 		gf3d_entity_think_all(); //CALLS ALL THINK FUNCTIONS (UNCOMMENT HERE)
 		
-		if (keys[SDL_SCANCODE_LEFT]) gf3d_vgraphics_rotate_camera(0.002);
-		if (keys[SDL_SCANCODE_RIGHT]) gf3d_vgraphics_rotate_camera(-0.002);
+		if (keys[SDL_SCANCODE_LEFT]) rotation += 0.002;
+		if (keys[SDL_SCANCODE_RIGHT]) rotation -= 0.002;
+		
+		gf3d_vgraphics_thirdperson_camera(playerEnt->position);
+		gf3d_vgraphics_rotate_camera(rotation, 3);
         /*gfc_matrix_rotate(
             modelMat2,
             modelMat2,
@@ -140,205 +136,7 @@ int main(int argc,char *argv[])
     return 0;
 }
 
-void player_think(Entity *self)
-{
-	//gf3d_vgraphics_rotate_camera(0.001);
-	/*gfc_matrix_rotate(
-		self->modelMatrix,
-		self->modelMatrix,
-		0.002,
-		vector3d(1, 0, 0));
-	*/
-
-	if (delayD > 0)
-	{
-		delayD--;
-		//slog("%i", delayD);
-	}
-
-	if (delaySS > 0)
-	{
-		delaySS--;
-		//slog("%i", delaySS);
-	}
-	
-	if (delayJump > 0)
-	{
-		delayJump--;
-		//slog("%i", delaySS);
-	}
-
-	if (sprintCount >= 5000)
-	{
-		sprintCheck = 1;
-	}
-
-	if (sprintCheck == 1)
-	{
-		sprintCount--;
-		if (sprintCount <= 0)
-		{
-			sprintCheck = 0;
-		}
-	}
-
-	const Uint8 *keys;
-	SDL_PumpEvents();
-	keys = SDL_GetKeyboardState(NULL);
-	if (keys[SDL_SCANCODE_W])
-	{
-		self->position.y += 0.05;
-		slog("y position +");
-	}
-
-	if (keys[SDL_SCANCODE_A])
-	{
-		self->position.x -= 0.05;
-		slog("x position -");
-	}
-
-	if (keys[SDL_SCANCODE_S])
-	{
-		self->position.y -= 0.05;
-		slog("y position -");
-	}
-
-	if (keys[SDL_SCANCODE_D])
-	{
-		self->position.x += 0.05;
-		slog("x position +");
-	}
-	
-	if (keys[SDL_SCANCODE_W] && keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0 && self->position.z == 0)
-	{
-		self->position.y += 0.08;
-		sprintCount++;
-		slog("sprinting");
-	}
-
-	if (keys[SDL_SCANCODE_A] && keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0 && self->position.z == 0)
-	{
-		self->position.x -= 0.08;
-		sprintCount++;
-		slog("sprinting");
-	}
-
-	if (keys[SDL_SCANCODE_S] && keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0 && self->position.z == 0)
-	{
-		self->position.y -= 0.05;
-		sprintCount++;
-		slog("sprinting");
-	}
-
-	if (keys[SDL_SCANCODE_D] && keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0 && self->position.z == 0)
-	{
-		self->position.x += 0.08;
-		sprintCount++;
-		slog("sprinting");
-	}
-
-	if (keys[SDL_SCANCODE_SPACE] && self->position.z == 0 && jump == 0 && delayJump == 0)
-	{
-		//self->position.z += 15;
-		jump = 2;
-		slog("jumping");
-	}
-
-	if (jump == 2 && self->position.z < 15)
-	{
-		self->position.z += 0.1;
-	}
-
-	if (self->position.z >= 15)
-	{
-		jump = 1;
-		delayJump = 4500;
-	}
-
-	if (self->position.z > 0 && jump == 1)
-	{
-		if (keys[SDL_SCANCODE_SPACE])
-		{
-			self->position.z -= 0.008;
-		}
-		else
-		{
-			self->position.z -= 0.015;
-		}
-	}
-
-	if (self->position.z <= 0)
-	{
-		self->position.z = 0;
-		jump = 0;
-	}
-
-	if (keys[SDL_SCANCODE_F] && delayD == 0)
-	{
-		delayD = 3000;
-		dash = 1;
-		beforeD = self->position.y;
-		//self->position.y += 30;
-		slog("dashed");
-	}
-	
-	if (dash == 1 && ((self->position.y - beforeD) < 30))
-	{
-		self->position.y += 0.1;
-	}
-
-	if (self->position.y - beforeD >= 30)
-	{
-		dash = 0;
-	}
-	
-	//if (keys[SDL_SCANCODE_A] && keys[SDL_SCANCODE_LALT]) slog("%i", delaySS);
-
-	if (keys[SDL_SCANCODE_Q] && delaySS == 0)
-	{
-		delaySS = 2000;
-		sidestep1 = 1;
-		beforeSS = self->position.x;
-		//self->position.x -= 15;
-		slog("sidestep1");
-	}
-
-	if (sidestep1 == 1 && ((self->position.x - beforeSS) > -15))
-	{
-		self->position.x -= 0.1;
-	}
-
-	if (self->position.x - beforeSS <= -15)
-	{
-		sidestep1 = 0;
-	}
-
-	if (keys[SDL_SCANCODE_E] && delaySS == 0)
-	{
-		delaySS = 2000;
-		sidestep2 = 1;
-		beforeSS = self->position.x;
-		//self->position.x += 15;
-		slog("sidestep2");
-	}
-
-	if (sidestep2 == 1 && ((self->position.x - beforeSS) < 15))
-	{
-		self->position.x += 0.1;
-	}
-
-	if (self->position.x - beforeSS >= 15)
-	{
-		sidestep2 = 0;
-	}
-
-	gfc_matrix_make_translation(
-		self->modelMatrix,
-		self->position
-	);
-}
-
-void follow(Entity *self, Entity *other)
+/*void follow(Entity *self, Entity *other)
 {
 	if (!self || !other) return;
 
@@ -369,7 +167,7 @@ void follow(Entity *self, Entity *other)
 		self->modelMatrix,
 		self->position
 	);
-}
+}*/
 
 void cube_spawn()
 {
@@ -377,7 +175,8 @@ void cube_spawn()
 
 	
 }
-void cube_think(Entity *self)
+
+/*void cube_think(Entity *self)
 {
 	if (!self) return;
 	//follow(self, player);
@@ -465,7 +264,7 @@ void sphere_think(Entity *self)
 	gfc_matrix_make_translation(
 		self->modelMatrix,
 		self->position);
-}
+}*/
 
 void brick_think(Entity *self)
 {
@@ -486,5 +285,6 @@ void cylinder_think(Entity *self)
 {
 	if (!self) return;
 }
+
 
 /*eol@eof*/
