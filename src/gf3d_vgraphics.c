@@ -674,14 +674,48 @@ uint32_t gf3d_vgraphics_find_memory_type(uint32_t typeFilter, VkMemoryPropertyFl
     return 0;
 }
 
-void gf3d_vgraphics_rotate_camera(float degrees)
+void gf3d_vgraphics_rotate_camera(float degrees, int axis)
 {
-    gfc_matrix_rotate(
-        gf3d_vgraphics.ubo.view,
-        gf3d_vgraphics.ubo.view,
-        degrees,
-        vector3d(0,0,1));
+	if (axis == 1)
+	{
+		gfc_matrix_rotate(
+			gf3d_vgraphics.ubo.view,
+			gf3d_vgraphics.ubo.view,
+			degrees,
+			vector3d(1, 0, 0));
+	}
 
+	else if (axis == 2)
+	{
+		gfc_matrix_rotate(
+			gf3d_vgraphics.ubo.view,
+			gf3d_vgraphics.ubo.view,
+			degrees,
+			vector3d(0, 1, 0));
+	}
+
+	else if (axis == 3)
+	{
+		gfc_matrix_rotate(
+			gf3d_vgraphics.ubo.view,
+			gf3d_vgraphics.ubo.view,
+			degrees,
+			vector3d(0, 0, 1));
+	}
+
+	else slog("invalid axis for camera rotation");
+}
+
+void gf3d_vgraphics_thirdperson_camera(Vector3D position)
+{
+	Vector3D thirdperson = position;
+	thirdperson.y += 5;
+	thirdperson.z -= 20;
+
+	gfc_matrix_make_translation(
+		gf3d_vgraphics.ubo.view,
+		thirdperson
+		);
 }
 
 Pipeline *gf3d_vgraphics_get_graphics_pipeline()
