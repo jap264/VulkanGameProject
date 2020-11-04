@@ -66,4 +66,11 @@ void gf3d_entity_free(Entity *entity);
 */
 void gf3d_entity_kill(Entity *entity);
 
+/*
+*	@brief makes an entity follow another entity
+*	@param self entity that is following
+*	@param other entity that is being followed
+*/
+void follow(Entity *self, Entity *other);
+
 #endif

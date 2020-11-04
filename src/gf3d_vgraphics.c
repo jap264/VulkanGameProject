@@ -116,7 +116,7 @@ void gf3d_vgraphics_init(
         45 * GFC_DEGTORAD,
         renderWidth/(float)renderHeight,
         0.1f,
-        100
+        350
     );
     
     gf3d_vgraphics.ubo.proj[1][1] *= -1;
@@ -709,12 +709,14 @@ void gf3d_vgraphics_rotate_camera(float degrees, int axis)
 void gf3d_vgraphics_thirdperson_camera(Vector3D position)
 {
 	Vector3D thirdperson = position;
-	thirdperson.y += 5;
-	thirdperson.z -= 20;
+	thirdperson.y -= 40;
+	thirdperson.z += 20;
 
-	gfc_matrix_make_translation(
+	gfc_matrix_view(
 		gf3d_vgraphics.ubo.view,
-		thirdperson
+		thirdperson,
+		position,
+		vector3d(0, 0, 1)
 		);
 }
 

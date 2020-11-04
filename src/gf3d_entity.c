@@ -108,4 +108,36 @@ void gf3d_entity_kill(Entity *entity)
 	entity->_inuse = 0;
 }
 
+void follow(Entity *self, Entity *other)
+{
+	if (!self || !other) return;
+
+	if (self->position.y > other->position.y)
+	{
+		self->position.y -= 0.015;
+		//slog("following -y");
+	}
+
+	if (self->position.y < other->position.y)
+	{
+		self->position.y += 0.015;
+		//slog("following +y");
+	}
+	if (self->position.x > other->position.x)
+	{
+		self->position.x -= 0.015;
+		//slog("following -x");
+	}
+
+	if (self->position.x < other->position.x)
+	{
+		self->position.x += 0.015;
+		//slog("following +x");
+	}
+
+	gfc_matrix_make_translation(
+		self->modelMatrix,
+		self->position
+		);
+}
 /*eol@eof*/

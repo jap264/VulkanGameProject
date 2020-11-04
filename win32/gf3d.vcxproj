@@ -102,6 +102,11 @@
     <ClInclude Include="..\gfc\simple_json\include\simple_json_string.h" />
     <ClInclude Include="..\gfc\simple_json\include\simple_json_value.h" />
     <ClInclude Include="..\gfc\simple_logger\include\simple_logger.h" />
+    <ClInclude Include="..\include\enemy_brick.h" />
+    <ClInclude Include="..\include\enemy_cone.h" />
+    <ClInclude Include="..\include\enemy_cube.h" />
+    <ClInclude Include="..\include\enemy_cylinder.h" />
+    <ClInclude Include="..\include\enemy_sphere.h" />
     <ClInclude Include="..\include\gf3d_camera.h" />
     <ClInclude Include="..\include\gf3d_commands.h" />
     <ClInclude Include="..\include\gf3d_entity.h" />
@@ -132,6 +137,11 @@
     <ClCompile Include="..\gfc\src\gfc_text.c" />
     <ClCompile Include="..\gfc\src\gfc_types.c" />
     <ClCompile Include="..\gfc\src\gfc_vector.c" />
+    <ClCompile Include="..\src\enemy_brick.c" />
+    <ClCompile Include="..\src\enemy_cone.c" />
+    <ClCompile Include="..\src\enemy_cube.c" />
+    <ClCompile Include="..\src\enemy_cylinder.c" />
+    <ClCompile Include="..\src\enemy_sphere.c" />
     <ClCompile Include="..\src\game.c" />
     <ClCompile Include="..\src\gf3d_camera.c" />
     <ClCompile Include="..\src\gf3d_commands.c" />

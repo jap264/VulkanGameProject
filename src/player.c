@@ -16,6 +16,7 @@ void player_move(Entity *self);
 int delayD = 0;
 int delaySS = 0;
 int delayJump = 0;
+int delaySprint = 10000;
 double beforeD;
 double beforeSS;
 int dash = 0;
@@ -28,10 +29,10 @@ int sprintCheck = 0;
 
 void player_init()
 {
-	player = (Player *)gfc_allocate_array(sizeof(Player), 3);
+	player = (Player *)gfc_allocate_array(sizeof(Player), 1);
 
 	player->ent = player_new();
-	player->ent->position = vector3d(0, 0, 0);
+	player->ent->position = vector3d(0, 0, 8);
 	player->ent->velocity = vector3d(0, 0, 0);
 	player->ent->rotation = vector3d(0, 0, 0);
 }
@@ -80,17 +81,22 @@ void player_think(Entity *self)
 	if (sprintCount >= 5000)
 	{
 		sprintCheck = 1;
-		sprintCount = 10000;
 	}
 
 	if (sprintCheck == 1)
 	{
-		sprintCount--;
+		delaySprint--;
 	}
 
-	if (sprintCount <= 0)
+	if (delaySprint <= 0)
 	{
 		sprintCheck = 0;
+		sprintCount = 0;
+	}
+
+	if (sprintCheck == 0)
+	{
+		delaySprint = 10000;
 	}
 
 	//-----------------------------------
@@ -124,7 +130,7 @@ void player_think(Entity *self)
 		
 		else
 		{
-			self->position.x -= 0.09;
+			self->position.x -= 0.05;
 			slog("left");
 		}
 	}
@@ -165,25 +171,25 @@ void player_think(Entity *self)
 	//JUMP
 	//-----------------------------------
 
-	if (keys[SDL_SCANCODE_SPACE] && self->position.z == 0 && jump == 0 && delayJump == 0)
+	if (keys[SDL_SCANCODE_SPACE] && self->position.z == 8 && jump == 0 && delayJump == 0)
 	{
 		//self->position.z += 15;
 		jump = 2;
 		slog("jumping");
 	}
 
-	if (jump == 2 && self->position.z < 15)
+	if (jump == 2 && self->position.z < 23)
 	{
 		self->position.z += 0.1;
 	}
 
-	if (self->position.z >= 15)
+	if (self->position.z >= 23)
 	{
 		jump = 1;
-		delayJump = 4500;
+		delayJump = 3000;
 	}
 
-	if (self->position.z > 0 && jump == 1)
+	if (self->position.z > 8 && jump == 1)
 	{
 		if (keys[SDL_SCANCODE_SPACE])
 		{
@@ -195,9 +201,9 @@ void player_think(Entity *self)
 		}
 	}
 
-	if (self->position.z <= 0)
+	if (self->position.z <= 8)
 	{
-		self->position.z = 0;
+		self->position.z = 8;
 		jump = 0;
 	}
 
