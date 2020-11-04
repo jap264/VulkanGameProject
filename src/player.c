@@ -98,9 +98,26 @@ void player_think(Entity *self)
 
 	//RIVERS
 
+	//Top River
+	if (self->position.x > -295 && self->position.x < 295 && self->position.y > 220 && self->position.y < 285) self->position.y -= 0.04;
+
+	//Bottom River
+	if (self->position.x > -295 && self->position.x < 295 && self->position.y > -295 && self->position.y < -230) self->position.y += 0.04;
+
+	//Left River
+	if (self->position.x > -295 && self->position.x < -235 && self->position.y > -295 && self->position.y < 285) self->position.x += 0.04;
+	
+	//Right River
+	if (self->position.x > 240 && self->position.x < 295 && self->position.y > -295 && self->position.y < 285) self->position.x -= 0.04;
 
 	//QUICKSAND
 	float quicksand = 0;
+	if (self->position.x > -295 && self->position.x < 295 && self->position.y > -300 && self->position.y < 285) quicksand = 0;
+	else
+	{
+		quicksand = 1;
+		jumpBool = 0;
+	}
 
 	//-----------------------------------
 	//SPRINT
@@ -131,11 +148,11 @@ void player_think(Entity *self)
 	//BASIC MOVEMENT
 	//-----------------------------------
 
-	if (keys[SDL_SCANCODE_W])
+	if (keys[SDL_SCANCODE_W] && self->position.y < 296)
 	{
 		if (quicksand == 1)
 		{
-			self->position.y += 0.01;
+			self->position.y += 0.001;
 		}
 
 		else if (keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0)
@@ -152,11 +169,11 @@ void player_think(Entity *self)
 		}
 	}
 
-	if (keys[SDL_SCANCODE_A])
+	if (keys[SDL_SCANCODE_A] && self->position.x > -300)
 	{
 		if (quicksand == 1)
 		{
-			self->position.x -= 0.01;
+			self->position.x -= 0.001;
 		}
 
 		else if (keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0)
@@ -173,11 +190,11 @@ void player_think(Entity *self)
 		}
 	}
 
-	if (keys[SDL_SCANCODE_S])
+	if (keys[SDL_SCANCODE_S] && self->position.y > -305)
 	{
 		if (quicksand == 1)
 		{
-			self->position.y -= 0.01;
+			self->position.y -= 0.001;
 		}
 
 		else if (keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0)
@@ -194,11 +211,11 @@ void player_think(Entity *self)
 		}
 	}
 
-	if (keys[SDL_SCANCODE_D])
+	if (keys[SDL_SCANCODE_D] && self->position.x < 300)
 	{
 		if (quicksand == 1)
 		{
-			self->position.x += 0.01;
+			self->position.x += 0.001;
 		}
 
 		else if (keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0)
@@ -270,12 +287,12 @@ void player_think(Entity *self)
 		slog("dashed");
 	}
 
-	if (dash == 1 && ((self->position.y - beforeD) < 75))
+	if (dash == 1 && ((self->position.y - beforeD) < 80))
 	{
 		self->position.y += 0.25;
 	}
 
-	if (self->position.y - beforeD >= 75)
+	if (self->position.y - beforeD >= 80)
 	{
 		dash = 0;
 	}
@@ -293,12 +310,12 @@ void player_think(Entity *self)
 		slog("sidestep1");
 	}
 
-	if (sidestep1 == 1 && ((self->position.x - beforeSS) > -40))
+	if (sidestep1 == 1 && ((self->position.x - beforeSS) > -60))
 	{
 		self->position.x -= 0.25;
 	}
 
-	if (self->position.x - beforeSS <= -40)
+	if (self->position.x - beforeSS <= -60)
 	{
 		sidestep1 = 0;
 	}
@@ -312,12 +329,12 @@ void player_think(Entity *self)
 		slog("sidestep2");
 	}
 
-	if (sidestep2 == 1 && ((self->position.x - beforeSS) < 40))
+	if (sidestep2 == 1 && ((self->position.x - beforeSS) < 60))
 	{
 		self->position.x += 0.25;
 	}
 
-	if (self->position.x - beforeSS >= 40)
+	if (self->position.x - beforeSS >= 60)
 	{
 		sidestep2 = 0;
 	}
