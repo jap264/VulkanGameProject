@@ -72,13 +72,13 @@ int main(int argc,char *argv[])
 	world = gf3d_entity_new();
 	world->model = gf3d_model_load("world");
 
-	cone = gf3d_entity_new();
-	cone->model = gf3d_model_load("cone");
-	cone->position = vector3d(0, 0, 20);
+	//cone = gf3d_entity_new();
+	//cone->model = gf3d_model_load("cone");
+	//cone->position = vector3d(0, 0, 20);
 
-	world->position = vector3d(0, 0, -10);
+	//world->position = vector3d(0, 0, -10);
 
-	gf3d_vgraphics_rotate_camera(-0.4, 1);
+	//gf3d_vgraphics_rotate_camera(-0.4, 1);
 
 	//cube->model = gf3d_model_load("cube");
 	//cube->think = sphere_think;
