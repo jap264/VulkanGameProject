@@ -5,6 +5,7 @@
 #include "gf3d_camera.h"
 #include "gf3d_vgraphics.h"
 #include "gfc_matrix.h"
+#include "gf3d_model.h"
 #include "gfc_vector.h"
 
 #include "player.h"
@@ -35,6 +36,8 @@ void player_init()
 	player->ent->position = vector3d(0, 0, 8);
 	player->ent->velocity = vector3d(0, 0, 0);
 	player->ent->rotation = vector3d(0, 0, 0);
+	player->ent->model = gf3d_model_load("dino");
+	player->ent->think = player_think;
 }
 
 Entity *player_new()
@@ -122,6 +125,8 @@ void player_think(Entity *self)
 	//-----------------------------------
 	//SPRINT
 	//-----------------------------------
+	
+	if (!keys[SDL_SCANCODE_LSHIFT]) sprintCount -= 0.1;
 
 	if (sprintCount >= 8000)
 	{
