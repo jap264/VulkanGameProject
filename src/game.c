@@ -72,19 +72,19 @@ int main(int argc,char *argv[])
 	world->model = gf3d_model_load("world");
 
 	//brick spawn
-	brick_init();
+	//brick_init();
 
 	//cone spawn
 	cone_init();
 
 	//cube spawn
-	cube_init();
+	//cube_init();
 
 	//cylinder spawn
-	cylinder_init();
+	//cylinder_init();
 
 	//sphere spawn
-	sphere_init();
+	/*sphere_init();*/
 
 	Vector3D camera_rotation = playerEnt->position;
 
@@ -98,6 +98,8 @@ int main(int argc,char *argv[])
 		
 		if (keys[SDL_SCANCODE_LEFT]) camera_rotation.x -= 0.001; //fix camera rotation
 		if (keys[SDL_SCANCODE_RIGHT])  camera_rotation.x += 0.001;
+
+		//if (keys[SDL_SCANCODE_LEFT]) cylinder_init();
 
 		gf3d_vgraphics_thirdperson_camera(playerEnt->position);
 

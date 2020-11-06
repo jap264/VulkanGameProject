@@ -23,7 +23,7 @@ void cone_init()
 	cone = (Cone *)gfc_allocate_array(sizeof(Cone), 1);
 
 	cone->ent = cone_new();
-	cone->ent->position = vector3d(0, 0, 10);
+	cone->ent->position = vector3d(0, 0, 8);
 	gfc_matrix_make_translation(cone->ent->modelMatrix, cone->ent->position);
 	cone->ent->velocity = vector3d(0, 0, 0);
 	cone->ent->rotation = vector3d(0, 0, 0);
@@ -52,12 +52,12 @@ void cone_think(Entity *self)
 	follow(self, get_player_entity(), 0.035);
 	
 	//set follow code for the z direction
-	if (self->position.z >  get_player_entity()->position.z)
+	if (self->position.z - 5 >  get_player_entity()->position.z)
 	{
 		self->position.z -= 0.03;
 	}
 
-	if (self->position.z <  get_player_entity()->position.z)
+	if (self->position.z - 5 <  get_player_entity()->position.z)
 	{
 		self->position.z += 0.03;
 	}
@@ -67,13 +67,13 @@ void cone_think(Entity *self)
 		self->position
 		);
 
-	rotation += 0.003;
+	rotation += 0.001;
 
 	gfc_matrix_rotate( //creates spinning effect for cone
 		self->modelMatrix,
 		self->modelMatrix,
 		rotation,
-		vector3d(0, 1, 0)
+		vector3d(0, 0, 1)
 		);
 	//slog("cone position: %f", self->position.z);
 }

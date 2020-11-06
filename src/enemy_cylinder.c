@@ -23,7 +23,7 @@ void cylinder_init()
 	cylinder = (Cylinder *)gfc_allocate_array(sizeof(Cylinder), 1);
 
 	cylinder->ent = cylinder_new();
-	cylinder->ent->position = vector3d(0, 0, 8);
+	cylinder->ent->position = vector3d(0, 0, 11);
 	gfc_matrix_make_translation(cylinder->ent->modelMatrix, cylinder->ent->position);
 	cylinder->ent->velocity = vector3d(0, 0, 0);
 	cylinder->ent->rotation = vector3d(0, 0, 0);
