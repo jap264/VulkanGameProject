@@ -14,6 +14,10 @@
 
 #include "player.h"
 #include "enemy_cone.h"
+#include "enemy_cube.h"
+#include "enemy_brick.h"
+#include "enemy_cylinder.h"
+#include "enemy_sphere.h"
 
 int main(int argc,char *argv[])
 {
@@ -31,7 +35,6 @@ int main(int argc,char *argv[])
 
 	//Enemies
 
-	float rotation = 0;
     
     for (a = 1; a < argc;a++)
     {
@@ -68,9 +71,22 @@ int main(int argc,char *argv[])
 	world = gf3d_entity_new();
 	world->model = gf3d_model_load("world");
 
+	//brick spawn
+	brick_init();
+
 	//cone spawn
 	cone_init();
 
+	//cube spawn
+	cube_init();
+
+	//cylinder spawn
+	cylinder_init();
+
+	//sphere spawn
+	sphere_init();
+
+	Vector3D camera_rotation = playerEnt->position;
 
     while(!done)
     {
@@ -80,9 +96,9 @@ int main(int argc,char *argv[])
 		
 		gf3d_entity_think_all(); //CALLS ALL THINK FUNCTIONS
 		
-		if (keys[SDL_SCANCODE_LEFT]) gf3d_vgraphics_rotate_camera(0.002, 3);
-		if (keys[SDL_SCANCODE_RIGHT]) gf3d_vgraphics_rotate_camera(-0.002, 3);
-		
+		if (keys[SDL_SCANCODE_LEFT]) camera_rotation.x -= 0.001; //fix camera rotation
+		if (keys[SDL_SCANCODE_RIGHT])  camera_rotation.x += 0.001;
+
 		gf3d_vgraphics_thirdperson_camera(playerEnt->position);
 
         // configure render command for graphics command pool

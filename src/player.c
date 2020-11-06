@@ -12,8 +12,6 @@
 
 static Player *player = { 0 };
 
-void player_move(Entity *self);
-
 int delayD = 0;
 int delaySS = 0;
 int delayJump = 0;
@@ -25,8 +23,10 @@ int sidestep1 = 0;
 int sidestep2 = 0;
 int jump = 0;
 int jumping = 0;
+int swimming = 0;
 int sprintCount = 0;
 int sprintCheck = 0;
+float sprintDistance = 0.12;
 
 void player_init()
 {
@@ -38,6 +38,7 @@ void player_init()
 	player->ent->rotation = vector3d(0, 0, 0);
 	player->ent->model = gf3d_model_load("dino");
 	player->ent->think = player_think;
+	player->ent->die = player_free;
 }
 
 Entity *player_new()
@@ -95,23 +96,42 @@ void player_think(Entity *self)
 	if (self->position.x > -40 && self->position.x < 22 && self->position.y > -40 && self->position.y < 40) jumpBool = 1;
 
 	//DESERT
-	float sprintDistance = 0.12;
-	if (self->position.x > -235 && self->position.x < 235 && self->position.y > -225 && self->position.y < 225) sprintDistance = 0.05;
+	if (self->position.x > -235 && self->position.x < 235 && self->position.y > -225 && self->position.y < 225)
+	{
+		swimming = 0;
+		sprintDistance = 0.05;
+	}
 	if (self->position.x > -140 && self->position.x < 122 && self->position.y > -130 && self->position.y < 135) sprintDistance = 0.12;
 
 	//RIVERS
+	if (swimming == 1) sprintDistance = 0.07;
 
 	//Top River
-	if (self->position.x > -295 && self->position.x < 295 && self->position.y > 220 && self->position.y < 285) self->position.y -= 0.04;
-
+	if (self->position.x > -295 && self->position.x < 295 && self->position.y > 220 && self->position.y < 285)
+	{
+		swimming = 1;
+		self->position.y -= 0.04;
+	}
 	//Bottom River
-	if (self->position.x > -295 && self->position.x < 295 && self->position.y > -295 && self->position.y < -230) self->position.y += 0.04;
+	if (self->position.x > -295 && self->position.x < 295 && self->position.y > -295 && self->position.y < -230)
+	{
+		swimming = 1;
+		self->position.y += 0.04;
+	}
 
 	//Left River
-	if (self->position.x > -295 && self->position.x < -235 && self->position.y > -295 && self->position.y < 285) self->position.x += 0.04;
-	
+	if (self->position.x > -295 && self->position.x < -235 && self->position.y > -295 && self->position.y < 285)
+	{
+		swimming = 1;
+		self->position.x += 0.04;
+	}
+
 	//Right River
-	if (self->position.x > 240 && self->position.x < 295 && self->position.y > -295 && self->position.y < 285) self->position.x -= 0.04;
+	if (self->position.x > 240 && self->position.x < 295 && self->position.y > -295 && self->position.y < 285)
+	{
+		swimming = 1;
+		self->position.x -= 0.04;
+	}
 
 	//QUICKSAND
 	float quicksand = 0;
@@ -246,7 +266,7 @@ void player_think(Entity *self)
 		//self->position.z += 15;
 		jump = 2;
 		slog("jumping");
-		slog("x: %f, y: %f", self->position.x, self->position.y);
+		//slog("x: %f, y: %f", self->position.x, self->position.y);
 	}
 
 	if (jump == 2 && self->position.z < jumpheight)

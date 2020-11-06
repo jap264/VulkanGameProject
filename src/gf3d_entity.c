@@ -83,6 +83,8 @@ void gf3d_entity_think_all()
 	{
 		if (!gf3d_entity.entity_list[i]._inuse) continue;
 		gf3d_entity_think(&gf3d_entity.entity_list[i]);
+
+		//write check collisions here
 	}
 }
 
@@ -108,30 +110,30 @@ void gf3d_entity_kill(Entity *entity)
 	entity->_inuse = 0;
 }
 
-void follow(Entity *self, Entity *other)
+void follow(Entity *self, Entity *other, float speed)
 {
 	if (!self || !other) return;
 
 	if (self->position.y > other->position.y)
 	{
-		self->position.y -= 0.015;
+		self->position.y -= speed;
 		//slog("following -y");
 	}
 
 	if (self->position.y < other->position.y)
 	{
-		self->position.y += 0.015;
+		self->position.y += speed;
 		//slog("following +y");
 	}
 	if (self->position.x > other->position.x)
 	{
-		self->position.x -= 0.015;
+		self->position.x -= speed;
 		//slog("following -x");
 	}
 
 	if (self->position.x < other->position.x)
 	{
-		self->position.x += 0.015;
+		self->position.x += speed;
 		//slog("following +x");
 	}
 

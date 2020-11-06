@@ -19,6 +19,7 @@ typedef struct Entity_S
 	Vector3D	rotation;
 	Matrix4		modelMatrix;
 	void		(*think)(struct Entity_S *self);
+	void		(*die)(struct Entity_S *self);
 } Entity;
 
 /*
@@ -70,7 +71,8 @@ void gf3d_entity_kill(Entity *entity);
 *	@brief makes an entity follow another entity
 *	@param self entity that is following
 *	@param other entity that is being followed
+*	@param speed distance to move every frame
 */
-void follow(Entity *self, Entity *other);
+void follow(Entity *self, Entity *other, float speed);
 
 #endif

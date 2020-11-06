@@ -5,21 +5,31 @@
 #include "gf3d_camera.h"
 #include "gf3d_vgraphics.h"
 #include "gfc_matrix.h"
+#include "gf3d_model.h"
 #include "gfc_vector.h"
 
 #include "enemy_cube.h"
 #include "player.h"
+#include "gf3d_entity.h"
 
 static Cube *cube = { 0 };
+static float rotation = 0;
 
 void cube_init()
 {
+	Cube *cube;
+	Entity *cubeEnt = NULL;
 	cube = (Cube *)gfc_allocate_array(sizeof(Cube), 1);
 
 	cube->ent = cube_new();
 	cube->ent->position = vector3d(0, 0, 8);
+	gfc_matrix_make_translation(cube->ent->modelMatrix, cube->ent->position);
 	cube->ent->velocity = vector3d(0, 0, 0);
 	cube->ent->rotation = vector3d(0, 0, 0);
+
+	cube->ent->model = gf3d_model_load("cube");
+	cube->ent->think = cube_think;
+	cube->ent->die = cube_free;
 }
 
 Entity *cube_new()
@@ -38,16 +48,14 @@ void cube_free(Cube *cube)
 void cube_think(Entity *self)
 {
 	if (!self) return;
-	//follow(self, player);
+	follow(self, get_player_entity(), 0.03);
 
-	gfc_matrix_make_translation(
-		self->modelMatrix,
-		self->position);
+	rotation -= 0.0015;
 
 	gfc_matrix_rotate(
 		self->modelMatrix,
 		self->modelMatrix,
-		0.002,
+		rotation,
 		vector3d(1, 0, 0));
 }
 
