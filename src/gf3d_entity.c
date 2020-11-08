@@ -69,6 +69,22 @@ Entity  *gf3d_entity_new()
 	return NULL;
 }
 
+int checkCollision(Entity *self, Entity *other)
+{
+	float distance_x = self->position.x - other->position.x;
+	float distance_y = self->position.y - other->position.y;
+	float distance_z = self->position.z - other->position.z;
+
+	if (self->radius == 0 || other->radius == 0) return 0;
+	//slog("%f, %f", self->radius, other->radius);
+
+	float radii_sum = self->radius + other->radius;
+
+	if ((distance_x * distance_x) + (distance_y * distance_y) + (distance_z * distance_z) <= (radii_sum * radii_sum)) return 1;
+
+	return 0;
+}
+
 void gf3d_entity_think(Entity *self)
 {
 	if (!self)return;
@@ -85,6 +101,26 @@ void gf3d_entity_think_all()
 		gf3d_entity_think(&gf3d_entity.entity_list[i]);
 
 		//write check collisions here
+		for (int x = 0; x < gf3d_entity.entity_count; x++)
+		{
+			if (&gf3d_entity.entity_list[x] == &gf3d_entity.entity_list[i]) continue;
+
+			//check collision
+			if (checkCollision(&gf3d_entity.entity_list[x], &gf3d_entity.entity_list[i]) == 1)
+			{
+				
+				if (!gf3d_entity.entity_list[x].die || !gf3d_entity.entity_list[i].die)
+				{
+					slog("die function doesn't exist");
+					continue;
+				}
+
+				gf3d_entity.entity_list[x].die(&gf3d_entity.entity_list[x]);
+				gf3d_entity.entity_list[i].die(&gf3d_entity.entity_list[i]);
+
+				slog("%s has collided with %s", &gf3d_entity.entity_list[x].name, &gf3d_entity.entity_list[i].name);
+			}
+		}
 	}
 }
 

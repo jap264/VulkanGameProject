@@ -33,8 +33,7 @@ int main(int argc,char *argv[])
 
 	Entity *world = NULL;
 
-	//Enemies
-
+	int spawnDelay;
     
     for (a = 1; a < argc;a++)
     {
@@ -70,27 +69,18 @@ int main(int argc,char *argv[])
 	//world spawn
 	world = gf3d_entity_new();
 	world->model = gf3d_model_load("world");
+	world->radius = 0;
 
-	//brick spawn
+	//sphere_init();
 	//brick_init();
-
-	//cone spawn
-	cone_init();
-
-	//cube spawn
-	//cube_init();
-
-	//cylinder spawn
-	//cylinder_init();
-
-	//sphere spawn
-	/*sphere_init();*/
 
 	Vector3D camera_rotation = playerEnt->position;
 
     while(!done)
     {
-        SDL_PumpEvents();   // update SDL's internal event structures
+		if (spawnDelay > 0) spawnDelay--;
+		
+		SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
         //update game things here
 		
@@ -99,7 +89,36 @@ int main(int argc,char *argv[])
 		if (keys[SDL_SCANCODE_LEFT]) camera_rotation.x -= 0.001; //fix camera rotation
 		if (keys[SDL_SCANCODE_RIGHT])  camera_rotation.x += 0.001;
 
-		//if (keys[SDL_SCANCODE_LEFT]) cylinder_init();
+		//manual enemy spawn
+		if (keys[SDL_SCANCODE_1] && spawnDelay == 0)
+		{
+			brick_init();
+			spawnDelay = 3000;
+		}
+
+		if (keys[SDL_SCANCODE_2] && spawnDelay == 0)
+		{
+			cone_init();
+			spawnDelay = 3000;
+		}
+		
+		if (keys[SDL_SCANCODE_3] && spawnDelay == 0)
+		{
+			cube_init();
+			spawnDelay = 3000;
+		}
+		
+		if (keys[SDL_SCANCODE_4] && spawnDelay == 0)
+		{
+			cylinder_init();
+			spawnDelay = 3000;
+		}
+		
+		if (keys[SDL_SCANCODE_5] && spawnDelay == 0)
+		{
+			sphere_init();
+			spawnDelay = 3000;
+		}
 
 		gf3d_vgraphics_thirdperson_camera(playerEnt->position);
 

@@ -22,10 +22,12 @@ void cube_init()
 	cube = (Cube *)gfc_allocate_array(sizeof(Cube), 1);
 
 	cube->ent = cube_new();
+	gfc_word_cpy(cube->ent->name, "cube");
 	cube->ent->position = vector3d(0, 0, 12);
 	gfc_matrix_make_translation(cube->ent->modelMatrix, cube->ent->position);
 	cube->ent->velocity = vector3d(0, 0, 0);
 	cube->ent->rotation = vector3d(0, 0, 0);
+	cube->ent->radius = 2;
 
 	cube->ent->model = gf3d_model_load("cube");
 	cube->ent->think = cube_think;
@@ -56,7 +58,7 @@ void cube_think(Entity *self)
 		self->modelMatrix,
 		self->modelMatrix,
 		rotation,
-		vector3d(1, 1, 1));
+		vector3d(0, 0, 1));
 }
 
 Entity *get_cube_entity()

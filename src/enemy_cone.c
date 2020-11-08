@@ -23,11 +23,12 @@ void cone_init()
 	cone = (Cone *)gfc_allocate_array(sizeof(Cone), 1);
 
 	cone->ent = cone_new();
+	gfc_word_cpy(cone->ent->name, "cone");
 	cone->ent->position = vector3d(0, 0, 8);
 	gfc_matrix_make_translation(cone->ent->modelMatrix, cone->ent->position);
 	cone->ent->velocity = vector3d(0, 0, 0);
 	cone->ent->rotation = vector3d(0, 0, 0);
-
+	cone->ent->radius = 2;
 	cone->ent->model = gf3d_model_load("cone");
 	cone->ent->think = cone_think;
 	cone->ent->die = cone_free;

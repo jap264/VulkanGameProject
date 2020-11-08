@@ -22,10 +22,12 @@ void brick_init()
 	brick = (Brick *)gfc_allocate_array(sizeof(Brick), 1);
 
 	brick->ent = brick_new();
+	gfc_word_cpy(brick->ent->name, "brick");
 	brick->ent->position = vector3d(0, 0, 8);
 	gfc_matrix_make_translation(brick->ent->modelMatrix, brick->ent->position);
 	brick->ent->velocity = vector3d(0, 0, 0);
 	brick->ent->rotation = vector3d(0, 0, 0);
+	brick->ent->radius = 2;
 
 	brick->ent->model = gf3d_model_load("brick");
 	brick->ent->think = brick_think;

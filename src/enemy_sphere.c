@@ -24,10 +24,12 @@ void sphere_init()
 	sphere = (Sphere *)gfc_allocate_array(sizeof(Sphere), 1);
 
 	sphere->ent = sphere_new();
+	gfc_word_cpy(sphere->ent->name, "sphere");
 	sphere->ent->position = vector3d(0, 0, 8);
 	gfc_matrix_make_translation(sphere->ent->modelMatrix, sphere->ent->position);
 	sphere->ent->velocity = vector3d(0, 0, 0);
 	sphere->ent->rotation = vector3d(0, 0, 0);
+	sphere->ent->radius = 2;
 
 	sphere->ent->model = gf3d_model_load("sphere"); //fix sphere model load
 	sphere->ent->think = sphere_think;

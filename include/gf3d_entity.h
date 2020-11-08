@@ -13,10 +13,12 @@
 typedef struct Entity_S
 {
 	Uint8		_inuse;   /**<flag to make sure entities are not re-assigned while active*/
+	TextWord	name;
 	Model		*model;
 	Vector3D	position;
 	Vector3D	velocity;
 	Vector3D	rotation;
+	float		radius;
 	Matrix4		modelMatrix;
 	void		(*think)(struct Entity_S *self);
 	void		(*die)(struct Entity_S *self);
@@ -75,4 +77,11 @@ void gf3d_entity_kill(Entity *entity);
 */
 void follow(Entity *self, Entity *other, float speed);
 
+
+/*
+*	@brief checks collision with another entity
+*	@param self first entity
+*	@param other second entity
+*/
+int checkCollision(Entity *self, Entity *other);
 #endif

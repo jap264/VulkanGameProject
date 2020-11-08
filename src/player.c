@@ -33,9 +33,11 @@ void player_init()
 	player = (Player *)gfc_allocate_array(sizeof(Player), 1);
 
 	player->ent = player_new();
+	gfc_word_cpy(player->ent->name, "player");
 	player->ent->position = vector3d(0, 0, 8);
 	player->ent->velocity = vector3d(0, 0, 0);
 	player->ent->rotation = vector3d(0, 0, 0);
+	player->ent->radius = 2;
 	player->ent->model = gf3d_model_load("dino");
 	player->ent->think = player_think;
 	player->ent->die = player_free;

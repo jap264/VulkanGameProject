@@ -23,10 +23,12 @@ void cylinder_init()
 	cylinder = (Cylinder *)gfc_allocate_array(sizeof(Cylinder), 1);
 
 	cylinder->ent = cylinder_new();
+	gfc_word_cpy(cylinder->ent->name, "cylinder");
 	cylinder->ent->position = vector3d(0, 0, 11);
 	gfc_matrix_make_translation(cylinder->ent->modelMatrix, cylinder->ent->position);
 	cylinder->ent->velocity = vector3d(0, 0, 0);
 	cylinder->ent->rotation = vector3d(0, 0, 0);
+	cylinder->ent->radius = 2;
 
 	cylinder->ent->model = gf3d_model_load("cylinder");
 	cylinder->ent->think = cylinder_think;
@@ -51,7 +53,7 @@ void cylinder_think(Entity *self)
 	if (!self) return;
 	follow(self, get_player_entity(), 0.04);
 
-	rotation -= 0.005;
+	rotation -= 0.001;
 
 	gfc_matrix_rotate(
 		self->modelMatrix,
