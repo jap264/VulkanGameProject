@@ -78,7 +78,7 @@ int main(int argc,char *argv[])
 
     while(!done)
     {
-		if (spawnDelay > 0) spawnDelay--;
+		if (spawnDelay > 0) spawnDelay -= 1;
 		
 		SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame

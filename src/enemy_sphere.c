@@ -29,7 +29,7 @@ void sphere_init()
 	gfc_matrix_make_translation(sphere->ent->modelMatrix, sphere->ent->position);
 	sphere->ent->velocity = vector3d(0, 0, 0);
 	sphere->ent->rotation = vector3d(0, 0, 0);
-	sphere->ent->radius = 2;
+	sphere->ent->radius = 10;
 
 	sphere->ent->model = gf3d_model_load("sphere"); //fix sphere model load
 	sphere->ent->think = sphere_think;

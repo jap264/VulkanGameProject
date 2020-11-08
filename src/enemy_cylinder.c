@@ -28,7 +28,7 @@ void cylinder_init()
 	gfc_matrix_make_translation(cylinder->ent->modelMatrix, cylinder->ent->position);
 	cylinder->ent->velocity = vector3d(0, 0, 0);
 	cylinder->ent->rotation = vector3d(0, 0, 0);
-	cylinder->ent->radius = 2;
+	cylinder->ent->radius = 10;
 
 	cylinder->ent->model = gf3d_model_load("cylinder");
 	cylinder->ent->think = cylinder_think;

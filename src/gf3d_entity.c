@@ -109,14 +109,14 @@ void gf3d_entity_think_all()
 			if (checkCollision(&gf3d_entity.entity_list[x], &gf3d_entity.entity_list[i]) == 1)
 			{
 				
-				if (!gf3d_entity.entity_list[x].die || !gf3d_entity.entity_list[i].die)
+				/*if (!gf3d_entity.entity_list[x].die || !gf3d_entity.entity_list[i].die)
 				{
 					slog("die function doesn't exist");
 					continue;
 				}
 
 				gf3d_entity.entity_list[x].die(&gf3d_entity.entity_list[x]);
-				gf3d_entity.entity_list[i].die(&gf3d_entity.entity_list[i]);
+				gf3d_entity.entity_list[i].die(&gf3d_entity.entity_list[i]);*/
 
 				slog("%s has collided with %s", &gf3d_entity.entity_list[x].name, &gf3d_entity.entity_list[i].name);
 			}

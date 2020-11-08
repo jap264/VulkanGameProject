@@ -27,7 +27,7 @@ void cube_init()
 	gfc_matrix_make_translation(cube->ent->modelMatrix, cube->ent->position);
 	cube->ent->velocity = vector3d(0, 0, 0);
 	cube->ent->rotation = vector3d(0, 0, 0);
-	cube->ent->radius = 2;
+	cube->ent->radius = 10;
 
 	cube->ent->model = gf3d_model_load("cube");
 	cube->ent->think = cube_think;

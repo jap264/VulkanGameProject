@@ -27,7 +27,7 @@ void brick_init()
 	gfc_matrix_make_translation(brick->ent->modelMatrix, brick->ent->position);
 	brick->ent->velocity = vector3d(0, 0, 0);
 	brick->ent->rotation = vector3d(0, 0, 0);
-	brick->ent->radius = 2;
+	brick->ent->radius = 10;
 
 	brick->ent->model = gf3d_model_load("brick");
 	brick->ent->think = brick_think;

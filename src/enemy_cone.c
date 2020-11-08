@@ -28,7 +28,7 @@ void cone_init()
 	gfc_matrix_make_translation(cone->ent->modelMatrix, cone->ent->position);
 	cone->ent->velocity = vector3d(0, 0, 0);
 	cone->ent->rotation = vector3d(0, 0, 0);
-	cone->ent->radius = 2;
+	cone->ent->radius = 10;
 	cone->ent->model = gf3d_model_load("cone");
 	cone->ent->think = cone_think;
 	cone->ent->die = cone_free;
