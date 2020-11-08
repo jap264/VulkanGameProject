@@ -104,21 +104,26 @@ void gf3d_entity_think_all()
 		for (int x = 0; x < gf3d_entity.entity_count; x++)
 		{
 			if (&gf3d_entity.entity_list[x] == &gf3d_entity.entity_list[i]) continue;
+			if (!&gf3d_entity.entity_list[x] || !&gf3d_entity.entity_list[i])
+			{
+				slog("null entities");
+				continue;
+			}
 
 			//check collision
 			if (checkCollision(&gf3d_entity.entity_list[x], &gf3d_entity.entity_list[i]) == 1)
 			{
 				
-				/*if (!gf3d_entity.entity_list[x].die || !gf3d_entity.entity_list[i].die)
+				if (!gf3d_entity.entity_list[x].die || !gf3d_entity.entity_list[i].die)
 				{
 					slog("die function doesn't exist");
 					continue;
 				}
 
-				gf3d_entity.entity_list[x].die(&gf3d_entity.entity_list[x]);
-				gf3d_entity.entity_list[i].die(&gf3d_entity.entity_list[i]);*/
-
 				slog("%s has collided with %s", &gf3d_entity.entity_list[x].name, &gf3d_entity.entity_list[i].name);
+
+				gf3d_entity_free(&gf3d_entity.entity_list[x]); //entity free is being called more than once
+				gf3d_entity_free(&gf3d_entity.entity_list[i]);
 			}
 		}
 	}
