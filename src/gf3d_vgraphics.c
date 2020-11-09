@@ -709,8 +709,8 @@ void gf3d_vgraphics_rotate_camera(float degrees, int axis)
 void gf3d_vgraphics_thirdperson_camera(Vector3D position)
 {
 	Vector3D thirdperson = position;
-	thirdperson.y -= 40;
-	thirdperson.z += 20;
+	thirdperson.y -= 45;
+	thirdperson.z += 25;
 
 	gfc_matrix_view(
 		gf3d_vgraphics.ubo.view,

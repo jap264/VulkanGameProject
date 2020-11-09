@@ -9,6 +9,13 @@
 #include "gfc_vector.h"
 
 #include "player.h"
+#include "powerup.h"
+#include "enemy_brick.h"
+#include "enemy_cone.h"
+#include "enemy_cube.h"
+#include "enemy_cylinder.h"
+#include "enemy_sphere.h"
+
 
 static Player *player = { 0 };
 
@@ -27,6 +34,7 @@ int swimming = 0;
 int sprintCount = 0;
 int sprintCheck = 0;
 float sprintDistance = 0.12;
+enum type{_player, _powerup, _enemy};
 
 void player_init()
 {
@@ -34,6 +42,7 @@ void player_init()
 
 	player->ent = player_new();
 	gfc_word_cpy(player->ent->name, "player");
+	player->ent->type = _player;
 	player->ent->position = vector3d(0, 0, 8);
 	player->ent->velocity = vector3d(0, 0, 0);
 	player->ent->rotation = vector3d(0, 0, 0);
@@ -41,6 +50,7 @@ void player_init()
 	player->ent->model = gf3d_model_load("dino");
 	player->ent->think = player_think;
 	player->ent->die = player_free;
+	player->health = 3;
 }
 
 Entity *player_new()
@@ -54,6 +64,26 @@ void player_free(Player *player)
 
 	gf3d_entity_free(player->ent);
 	memset(player, 0, sizeof(Player));
+}
+
+void player_collide(Entity *other)
+{
+	if (!other) return;
+	slog("player collision: %s", other->name);
+
+	//check if powerup
+	if (other->type == _powerup) return;
+
+	//check if enemy
+	else if (other->type == _enemy)
+	{
+		/*player->health--;
+		if (player->health == 0) gf3d_entity_free(player->ent);*/
+
+		//free the entity that collides with the player
+		gf3d_entity_free(other);
+	}
+
 }
 
 void player_think(Entity *self)
@@ -382,4 +412,9 @@ Entity *get_player_entity()
 Player *get_player()
 {
 	return player;
+}
+
+int *get_player_health()
+{
+	return player->health;
 }

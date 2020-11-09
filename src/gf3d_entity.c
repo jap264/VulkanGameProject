@@ -1,6 +1,8 @@
 #include "simple_logger.h"
 
 #include "gf3d_entity.h"
+#include "player.h"
+#include "powerup.h"
 
 typedef struct
 {
@@ -11,6 +13,8 @@ typedef struct
 static EntityManager gf3d_entity = { 0 };
 
 void gf3d_entity_free(Entity *entity);
+
+enum type{ _player, _powerup, _enemy };
 
 void gf3d_entity_close()
 {
@@ -113,17 +117,29 @@ void gf3d_entity_think_all()
 			//check collision
 			if (checkCollision(&gf3d_entity.entity_list[x], &gf3d_entity.entity_list[i]) == 1)
 			{
-				
-				if (!gf3d_entity.entity_list[x].die || !gf3d_entity.entity_list[i].die)
+				//slog("%s has collided with %s", &gf3d_entity.entity_list[x].name, &gf3d_entity.entity_list[i].name);
+
+				if (&gf3d_entity.entity_list[x] == get_player_entity()) //first entity is player
 				{
-					slog("die function doesn't exist");
-					continue;
+					slog("x is the player");
+					player_collide(&gf3d_entity.entity_list[i]);
+				}
+				
+				else if (&gf3d_entity.entity_list[i] == get_player_entity()) //second entity is the player
+				{
+					slog("i is the player");
+					player_collide(&gf3d_entity.entity_list[x]);
 				}
 
-				slog("%s has collided with %s", &gf3d_entity.entity_list[x].name, &gf3d_entity.entity_list[i].name);
+				//else if (&gf3d_entity.entity_list[x] == get_powerup_entity() || &gf3d_entity.entity_list[i] == get_powerup_entity()) continue; //ignore powerup vs. enemy collision
 
-				gf3d_entity_free(&gf3d_entity.entity_list[x]); //entity free is being called more than once
-				gf3d_entity_free(&gf3d_entity.entity_list[i]);
+
+				else //two enemies colliding
+				{
+					slog("two enemies have collided");
+					gf3d_entity_free(&gf3d_entity.entity_list[x]); 
+					gf3d_entity_free(&gf3d_entity.entity_list[i]);
+				}
 			}
 		}
 	}

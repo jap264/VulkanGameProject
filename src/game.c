@@ -13,6 +13,7 @@
 #include "gf3d_entity.h"
 
 #include "player.h"
+#include "powerup.h"
 #include "enemy_cone.h"
 #include "enemy_cube.h"
 #include "enemy_brick.h"
@@ -33,7 +34,7 @@ int main(int argc,char *argv[])
 
 	Entity *world = NULL;
 
-	int spawnDelay;
+	int spawnDelay = 0;
     
     for (a = 1; a < argc;a++)
     {
@@ -71,8 +72,7 @@ int main(int argc,char *argv[])
 	world->model = gf3d_model_load("world");
 	world->radius = 0;
 
-	//sphere_init();
-	//brick_init();
+	powerup_init();
 
 	Vector3D camera_rotation = playerEnt->position;
 
@@ -94,30 +94,35 @@ int main(int argc,char *argv[])
 		{
 			brick_init();
 			spawnDelay = 3000;
+			slog("brick spawn");
 		}
 
 		if (keys[SDL_SCANCODE_2] && spawnDelay == 0)
 		{
 			cone_init();
 			spawnDelay = 3000;
+			slog("cone spawn");
 		}
 		
 		if (keys[SDL_SCANCODE_3] && spawnDelay == 0)
 		{
 			cube_init();
 			spawnDelay = 3000;
+			slog("cube spawn");
 		}
 		
 		if (keys[SDL_SCANCODE_4] && spawnDelay == 0)
 		{
 			cylinder_init();
 			spawnDelay = 3000;
+			slog("cylinder spawn");
 		}
 		
 		if (keys[SDL_SCANCODE_5] && spawnDelay == 0)
 		{
 			sphere_init();
 			spawnDelay = 3000;
+			slog("sphere spawn");
 		}
 
 		gf3d_vgraphics_thirdperson_camera(playerEnt->position);

@@ -14,7 +14,7 @@
 
 static Cylinder *cylinder = { 0 };
 static float rotation = 0;
-
+enum type{ _player, _powerup, _enemy };
 void cylinder_init()
 {
 	Cylinder *cylinder;
@@ -24,6 +24,7 @@ void cylinder_init()
 
 	cylinder->ent = cylinder_new();
 	gfc_word_cpy(cylinder->ent->name, "cylinder");
+	cylinder->ent->type = _enemy;
 	cylinder->ent->position = vector3d(0, 0, 11);
 	gfc_matrix_make_translation(cylinder->ent->modelMatrix, cylinder->ent->position);
 	cylinder->ent->velocity = vector3d(0, 0, 0);

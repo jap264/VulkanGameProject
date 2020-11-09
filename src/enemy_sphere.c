@@ -15,6 +15,7 @@
 static Sphere *sphere = { 0 };
 static float rotation = 0;
 static int jumping = 0;
+enum type{ _player, _powerup, _enemy };
 
 void sphere_init()
 {
@@ -25,13 +26,14 @@ void sphere_init()
 
 	sphere->ent = sphere_new();
 	gfc_word_cpy(sphere->ent->name, "sphere");
+	sphere->ent->type = _enemy;
 	sphere->ent->position = vector3d(0, 0, 8);
 	gfc_matrix_make_translation(sphere->ent->modelMatrix, sphere->ent->position);
 	sphere->ent->velocity = vector3d(0, 0, 0);
 	sphere->ent->rotation = vector3d(0, 0, 0);
 	sphere->ent->radius = 10;
 
-	sphere->ent->model = gf3d_model_load("sphere"); //fix sphere model load
+	sphere->ent->model = gf3d_model_load("sphere");
 	sphere->ent->think = sphere_think;
 	sphere->ent->die = sphere_free;
 }

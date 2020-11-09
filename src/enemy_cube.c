@@ -14,6 +14,7 @@
 
 static Cube *cube = { 0 };
 static float rotation = 0;
+enum type{ _player, _powerup, _enemy };
 
 void cube_init()
 {
@@ -23,6 +24,7 @@ void cube_init()
 
 	cube->ent = cube_new();
 	gfc_word_cpy(cube->ent->name, "cube");
+	cube->ent->type = _enemy;
 	cube->ent->position = vector3d(0, 0, 12);
 	gfc_matrix_make_translation(cube->ent->modelMatrix, cube->ent->position);
 	cube->ent->velocity = vector3d(0, 0, 0);

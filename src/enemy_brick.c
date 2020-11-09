@@ -14,6 +14,7 @@
 
 static Brick *brick = { 0 };
 static float rotation = 0;
+enum type{ _player, _powerup, _enemy };
 
 void brick_init()
 {
@@ -23,6 +24,7 @@ void brick_init()
 
 	brick->ent = brick_new();
 	gfc_word_cpy(brick->ent->name, "brick");
+	brick->ent->type = _enemy;
 	brick->ent->position = vector3d(0, 0, 8);
 	gfc_matrix_make_translation(brick->ent->modelMatrix, brick->ent->position);
 	brick->ent->velocity = vector3d(0, 0, 0);

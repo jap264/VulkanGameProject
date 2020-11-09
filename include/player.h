@@ -6,6 +6,7 @@
 typedef struct Player_S
 {
 	Entity *ent;
+	int		health;
 
 }Player;
 
@@ -33,6 +34,12 @@ void player_think(Entity *self);
 void player_free(Player *player);
 
 /*
+*	@brief checks what the player collided with and respond accordingly
+*	@param other sthe entity the player collided with
+*/
+void player_collide(Entity *other);
+
+/*
 *	@brief returns the player's entity
 */
 Entity *get_player_entity();
@@ -41,5 +48,10 @@ Entity *get_player_entity();
 *	@brief returns the player
 */
 Player *get_player();
+
+/*
+*	@brief returns the player's health
+*/
+int *get_player_health();
 
 #endif
