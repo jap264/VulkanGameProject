@@ -39,6 +39,16 @@ void gf3d_entity_init(Uint32 maxEntities);
 Entity  *gf3d_entity_new();
 
 /*
+*	@brief returns entity list
+*/
+Entity  *gf3d_entity_get_list();
+
+/*
+*	@brief returns entity count
+*/
+Uint32  *gf3d_entity_get_entity_count();
+
+/*
 *	@brief queues up the entity to be drawn for the given draw command
 *	@param self the entity to draw
 *	@param bufferFrame the renderFrame to draw with

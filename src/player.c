@@ -8,8 +8,11 @@
 #include "gf3d_model.h"
 #include "gfc_vector.h"
 
+#include "gf3d_entity.h"
+
 #include "player.h"
 #include "powerup.h"
+
 #include "enemy_brick.h"
 #include "enemy_cone.h"
 #include "enemy_cube.h"
@@ -35,6 +38,7 @@ int sprintCount = 0;
 int sprintCheck = 0;
 float sprintDistance = 0.12;
 enum type{_player, _powerup, _enemy};
+enum pType{ pHealth, pSpeed, pJump, pInvincibility, pNuke};
 
 static int integer(float f);
 static int randNum();
@@ -51,6 +55,7 @@ void player_init()
 	player->ent->rotation = vector3d(0, 0, 0);
 	player->ent->radius = 2;
 	player->ent->model = gf3d_model_load("dino");
+	player->status = 1;
 	player->ent->think = player_think;
 	player->ent->die = player_free;
 	player->health = 3;
@@ -76,15 +81,46 @@ void player_collide(Entity *other)
 	//slog("ent type: %i", other->type);
 
 	//check if powerup
-	if (other->type == _powerup) return;
+	if (other->type == _powerup)
+	{
+		//check powerup type
+		if (other->pType == pHealth)
+		{
+			//check max health
+			if (player->health < 3) player->health += 1;
+			slog("health picked up, health: %i", player->health);
+			if (player->health == 3) slog("player has max health!");
+		}
+
+		if (other->pType == pNuke)
+		{
+			Entity *entList = gf3d_entity_get_list();
+			Uint32 entCount = gf3d_entity_get_entity_count();
+
+			for (Uint32 x = 0; x < entCount; x++)
+			{
+				if (!&entList[x]._inuse || &entList[x] == player->ent || &entList[x].type == _powerup || entList[x].radius == 0) continue;
+				else gf3d_entity_free(&entList[x]);
+			}
+		}
+
+		//free the powerup that collides with the player
+		gf3d_entity_free(other);
+	}
 
 	//check if enemy
 	else if (other->type == _enemy)
 	{
-		/*player->health--;
-		if (player->health == 0) gf3d_entity_free(player->ent);*/
+		player->health--;
+		slog("enemy attacked player, health: %i", player->health);
 
-		//free the entity that collides with the player
+		if (player->health == 0)
+		{
+			slog("player has died");
+			player->status = 0;
+			gf3d_entity_free(player->ent);
+		}
+		//free the enemy that collides with the player
 		gf3d_entity_free(other);
 	}
 
@@ -220,13 +256,13 @@ void player_think(Entity *self)
 		{
 			self->position.y += sprintDistance;
 			sprintCount++;
-			slog("sprint forward %f", sprintDistance);
+			//slog("sprint forward %f", sprintDistance);
 		}
 		
 		else
 		{
 			self->position.y += 0.07;
-			slog("forward");
+			//slog("forward");
 		}
 	}
 
@@ -241,13 +277,13 @@ void player_think(Entity *self)
 		{
 			self->position.x -= sprintDistance - 0.02;
 			sprintCount++;
-			slog("sprint left %f", sprintDistance - 0.02);
+			//slog("sprint left %f", sprintDistance - 0.02);
 		}
 		
 		else
 		{
 			self->position.x -= 0.05;
-			slog("left");
+			//slog("left");
 		}
 	}
 
@@ -262,13 +298,13 @@ void player_think(Entity *self)
 		{
 			self->position.y -= sprintDistance;
 			sprintCount++;
-			slog("sprint backward %f", sprintDistance);
+			//slog("sprint backward %f", sprintDistance);
 		}
 		
 		else
 		{
 			self->position.y -= 0.07;
-			slog("backward");
+			//slog("backward");
 		}
 	}
 
@@ -283,13 +319,13 @@ void player_think(Entity *self)
 		{
 			self->position.x += sprintDistance - 0.02;
 			sprintCount++;
-			slog("sprint right %f", sprintDistance - 0.02);
+			//slog("sprint right %f", sprintDistance - 0.02);
 		}
 		
 		else
 		{
 			self->position.x += 0.05;
-			slog("right");
+			//slog("right");
 		}
 	}
 

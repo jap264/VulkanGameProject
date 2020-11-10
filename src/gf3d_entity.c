@@ -16,6 +16,16 @@ void gf3d_entity_free(Entity *entity);
 
 enum type{ _player, _powerup, _enemy };
 
+Entity  *gf3d_entity_get_list()
+{
+	return gf3d_entity.entity_list;
+}
+
+Uint32  *gf3d_entity_get_entity_count()
+{
+	return gf3d_entity.entity_count;
+}
+
 void gf3d_entity_close()
 {
 	int i;

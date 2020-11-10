@@ -48,8 +48,8 @@ int main(int argc,char *argv[])
     slog("gf3d begin");
     gf3d_vgraphics_init(
         "gf3d",                 //program name
-        1600,                   //screen width
-        1000,                    //screen height
+        1200,                   //screen width
+        700,                    //screen height
         vector4d(0.51,0.75,1,1),//background color
         0,                      //fullscreen
         validate                //validation
@@ -127,9 +127,43 @@ int main(int argc,char *argv[])
 
 		if (keys[SDL_SCANCODE_6] && spawnDelay == 0)
 		{
-			powerup_init();
+			powerup_health();
 			spawnDelay = 3000;
-			slog("powerup spawn");
+			slog("health powerup spawn");
+		}
+
+		if (keys[SDL_SCANCODE_7] && spawnDelay == 0)
+		{
+			powerup_speed();
+			spawnDelay = 3000;
+			slog("speed powerup spawn");
+		}
+
+		if (keys[SDL_SCANCODE_8] && spawnDelay == 0)
+		{
+			powerup_jump();
+			spawnDelay = 3000;
+			slog("jump powerup spawn");
+		}
+
+		if (keys[SDL_SCANCODE_9] && spawnDelay == 0)
+		{
+			powerup_invincibility();
+			spawnDelay = 3000;
+			slog("invincibility powerup spawn");
+		}
+
+		if (keys[SDL_SCANCODE_0] && spawnDelay == 0)
+		{
+			powerup_nuke();
+			spawnDelay = 3000;
+			slog("nuke powerup spawn");
+		}
+
+		if (keys[SDL_SCANCODE_RETURN] && player->status == 0)
+		{
+			player_init();
+			playerEnt = get_player_entity();
 		}
 
 		gf3d_vgraphics_thirdperson_camera(playerEnt->position);

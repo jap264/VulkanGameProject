@@ -20,6 +20,36 @@ void powerup_init();
 void powerup_spawn(Powerup *powerup);
 
 /*
+*	@brief spawns a health powerup
+*	@note adds +1 health if not max health (3)
+*/
+void powerup_health();
+
+/*
+*	@brief spawns a speed powerup
+*	@note doubles speed in all areas
+*/
+void powerup_speed();
+
+/*
+*	@brief spawns a jump powerup
+*	@note increase jump height, jump speed, and slow fall
+*/
+void powerup_jump();
+
+/*
+*	@brief spawns a invincibility powerup
+*	@note player is immune to enemy attacks and enemies die on impact
+*/
+void powerup_invincibility();
+
+/*
+*	@brief spawns a nuke powerup
+*	@note despawns all enemies
+*/
+void powerup_nuke();
+
+/*
 *	@brief initializes the powerup entity
 */
 Entity *powerup_new();
