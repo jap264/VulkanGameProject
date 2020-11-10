@@ -6,13 +6,18 @@
 typedef struct Powerup_S
 {
 	Entity *ent;
-
 }Powerup;
 
 /*
 *	@brief allocates memory for powerup entity
 */
 void powerup_init();
+
+/*
+*	@brief picks a random powerup type on a position
+*	@param powerup the powerup to spawn
+*/
+void powerup_spawn(Powerup *powerup);
 
 /*
 *	@brief initializes the powerup entity

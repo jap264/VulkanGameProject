@@ -36,6 +36,9 @@ int sprintCheck = 0;
 float sprintDistance = 0.12;
 enum type{_player, _powerup, _enemy};
 
+static int integer(float f);
+static int randNum();
+
 void player_init()
 {
 	player = (Player *)gfc_allocate_array(sizeof(Player), 1);
@@ -43,7 +46,7 @@ void player_init()
 	player->ent = player_new();
 	gfc_word_cpy(player->ent->name, "player");
 	player->ent->type = _player;
-	player->ent->position = vector3d(0, 0, 8);
+	player->ent->position = vector3d(-10, -10, 8);
 	player->ent->velocity = vector3d(0, 0, 0);
 	player->ent->rotation = vector3d(0, 0, 0);
 	player->ent->radius = 2;
@@ -70,6 +73,7 @@ void player_collide(Entity *other)
 {
 	if (!other) return;
 	slog("player collision: %s", other->name);
+	//slog("ent type: %i", other->type);
 
 	//check if powerup
 	if (other->type == _powerup) return;
@@ -298,6 +302,7 @@ void player_think(Entity *self)
 		//self->position.z += 15;
 		jump = 2;
 		slog("jumping");
+		//slog("rand: %i", randNum());
 		//slog("x: %f, y: %f", self->position.x, self->position.y);
 	}
 
@@ -417,4 +422,15 @@ Player *get_player()
 int *get_player_health()
 {
 	return player->health;
+}
+
+static int integer(float f)
+{
+	int result = f;
+	return result;
+}
+
+static int randNum()
+{
+	return integer(gfc_crandom() * 5 + 5);
 }

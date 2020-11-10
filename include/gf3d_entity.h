@@ -15,6 +15,7 @@ typedef struct Entity_S
 	Uint8		_inuse;   /**<flag to make sure entities are not re-assigned while active*/
 	TextWord	name;
 	int			type;
+	int			pType;
 	Model		*model;
 	Vector3D	position;
 	Vector3D	velocity;

@@ -14,6 +14,9 @@
 
 static Powerup *powerup = { 0 };
 enum type{ _player, _powerup, _enemy };
+enum pType{ health, speed, jump, invincibility, nuke};
+
+static int integer(float f);
 
 void powerup_init()
 {
@@ -24,13 +27,60 @@ void powerup_init()
 	powerup->ent = powerup_new();
 	gfc_word_cpy(powerup->ent->name, "powerup");
 	powerup->ent->type = _powerup;
-	powerup->ent->position = vector3d(0, 0, 10);
-	gfc_matrix_make_translation(powerup->ent->modelMatrix, powerup->ent->position);
+	/*powerup->ent->position = vector3d(-10, -8, 10);
+	gfc_matrix_make_translation(powerup->ent->modelMatrix, powerup->ent->position);*/
 	powerup->ent->radius = 3;
 
-	powerup->ent->model = gf3d_model_load("powerup_health");
+	powerup_spawn(powerup);
 	powerup->ent->think = powerup_think;
 	powerup->ent->die = powerup_free;
+}
+
+void powerup_spawn(Powerup *powerup)
+{
+	int rand = randNum(); //picks a rand num 0-9
+
+	if (rand < 2)
+	{
+		powerup->ent->model = gf3d_model_load("powerup_health");
+		gfc_word_cpy(powerup->ent->name, "powerup_health");
+		powerup->ent->pType = health;
+		powerup->ent->position = vector3d(-10, -6, 10); //top
+	}
+
+	else if (rand == 2 || rand == 3)
+	{
+		powerup->ent->model = gf3d_model_load("powerup_speed");
+		gfc_word_cpy(powerup->ent->name, "powerup_speed");
+		powerup->ent->pType = speed;
+		powerup->ent->position = vector3d(-12, -8, 10); //left
+	}
+
+	else if (rand == 4 || rand == 5)
+	{
+		powerup->ent->model = gf3d_model_load("powerup_jump");
+		gfc_word_cpy(powerup->ent->name, "powerup_jump");
+		powerup->ent->pType = jump;
+		powerup->ent->position = vector3d(-11, -10, 10); //bottom left
+	}
+
+	else if (rand == 6 || rand == 7)
+	{
+		powerup->ent->model = gf3d_model_load("powerup_invincibility");
+		gfc_word_cpy(powerup->ent->name, "powerup_invincibility");
+		powerup->ent->pType = invincibility;
+		powerup->ent->position = vector3d(-9, -10, 10); //bottom right
+	}
+
+	else
+	{
+		powerup->ent->model = gf3d_model_load("powerup_nuke");
+		gfc_word_cpy(powerup->ent->name, "powerup_nuke");
+		powerup->ent->pType = nuke;
+		powerup->ent->position = vector3d(-8, -8, 10); //right
+	}
+
+	gfc_matrix_make_translation(powerup->ent->modelMatrix, powerup->ent->position);
 }
 
 Entity *powerup_new()
@@ -49,6 +99,12 @@ void powerup_free(Powerup *powerup)
 void powerup_think(Entity *self)
 {
 	if (!self) return;
+
+	gfc_matrix_rotate(
+		self->modelMatrix,
+		self->modelMatrix,
+		0.0015,
+		vector3d(0, 0, 1));
 }
 
 Entity *get_powerup_entity()
@@ -59,4 +115,15 @@ Entity *get_powerup_entity()
 Powerup *get_powerup()
 {
 	return powerup;
+}
+
+int integer(float f)
+{
+	int result = f;
+	return result;
+}
+
+static int randNum()
+{
+	return integer(gfc_crandom() * 5 + 5);
 }

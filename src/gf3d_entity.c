@@ -131,12 +131,13 @@ void gf3d_entity_think_all()
 					player_collide(&gf3d_entity.entity_list[x]);
 				}
 
-				//else if (&gf3d_entity.entity_list[x] == get_powerup_entity() || &gf3d_entity.entity_list[i] == get_powerup_entity()) continue; //ignore powerup vs. enemy collision
-
+				else if (gf3d_entity.entity_list[x].type == 1 || gf3d_entity.entity_list[i].type == 1) continue; // ignore collisions between powerups vs. other powerups & enemies
 
 				else //two enemies colliding
 				{
 					slog("two enemies have collided");
+					/*slog("x ent type: %i", &gf3d_entity.entity_list[x].type);
+					slog("i ent type: %i", &gf3d_entity.entity_list[i].type);*/
 					gf3d_entity_free(&gf3d_entity.entity_list[x]); 
 					gf3d_entity_free(&gf3d_entity.entity_list[i]);
 				}

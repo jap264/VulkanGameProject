@@ -72,7 +72,7 @@ int main(int argc,char *argv[])
 	world->model = gf3d_model_load("world");
 	world->radius = 0;
 
-	powerup_init();
+	//powerup_init();
 
 	Vector3D camera_rotation = playerEnt->position;
 
@@ -123,6 +123,13 @@ int main(int argc,char *argv[])
 			sphere_init();
 			spawnDelay = 3000;
 			slog("sphere spawn");
+		}
+
+		if (keys[SDL_SCANCODE_6] && spawnDelay == 0)
+		{
+			powerup_init();
+			spawnDelay = 3000;
+			slog("powerup spawn");
 		}
 
 		gf3d_vgraphics_thirdperson_camera(playerEnt->position);
