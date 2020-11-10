@@ -63,7 +63,7 @@ void gf3d_entity_init(Uint32 maxEntities)
 void gf3d_entity_free(Entity *entity)
 {
 	if (!entity)return;
-	gf3d_model_free(entity->model);
+	//gf3d_model_free(entity->model);
 	memset(entity, 0, sizeof(Entity));
 }
 
@@ -131,13 +131,13 @@ void gf3d_entity_think_all()
 
 				if (&gf3d_entity.entity_list[x] == get_player_entity()) //first entity is player
 				{
-					slog("x is the player");
+					//slog("x is the player");
 					player_collide(&gf3d_entity.entity_list[i]);
 				}
 				
 				else if (&gf3d_entity.entity_list[i] == get_player_entity()) //second entity is the player
 				{
-					slog("i is the player");
+					//slog("i is the player");
 					player_collide(&gf3d_entity.entity_list[x]);
 				}
 
@@ -150,6 +150,7 @@ void gf3d_entity_think_all()
 					slog("i ent type: %i", &gf3d_entity.entity_list[i].type);*/
 					gf3d_entity_free(&gf3d_entity.entity_list[x]); 
 					gf3d_entity_free(&gf3d_entity.entity_list[i]);
+					powerup_init();
 				}
 			}
 		}
@@ -159,6 +160,7 @@ void gf3d_entity_think_all()
 void gf3d_entity_draw(Entity *self, Uint32 bufferFrame, VkCommandBuffer commandBuffer)
 {
 	if (!self)return;
+	if (!self->model) return;
 	gf3d_model_draw(self->model, bufferFrame, commandBuffer, self->modelMatrix);
 }
 

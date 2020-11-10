@@ -25,7 +25,7 @@ void cylinder_init()
 	cylinder->ent = cylinder_new();
 	gfc_word_cpy(cylinder->ent->name, "cylinder");
 	cylinder->ent->type = _enemy;
-	cylinder->ent->position = vector3d(0, 0, 11);
+	cylinder->ent->position = vector3d(300, -305, 11);
 	gfc_matrix_make_translation(cylinder->ent->modelMatrix, cylinder->ent->position);
 	cylinder->ent->velocity = vector3d(0, 0, 0);
 	cylinder->ent->rotation = vector3d(0, 0, 0);

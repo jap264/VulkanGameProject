@@ -15,6 +15,7 @@
 static Cone *cone = { 0 };
 static float rotation = 0;
 enum type{ _player, _powerup, _enemy };
+
 void cone_init()
 {
 	Cone *cone;
@@ -25,7 +26,7 @@ void cone_init()
 	cone->ent = cone_new();
 	gfc_word_cpy(cone->ent->name, "cone");
 	cone->ent->type = _enemy;
-	cone->ent->position = vector3d(0, 0, 8);
+	cone->ent->position = vector3d(-300, 296, 8);
 	gfc_matrix_make_translation(cone->ent->modelMatrix, cone->ent->position);
 	cone->ent->velocity = vector3d(0, 0, 0);
 	cone->ent->rotation = vector3d(0, 0, 0);
@@ -56,12 +57,12 @@ void cone_think(Entity *self)
 	//set follow code for the z direction
 	if (self->position.z - 5 >  get_player_entity()->position.z)
 	{
-		self->position.z -= 0.03;
+		self->position.z -= 0.035;
 	}
 
 	if (self->position.z - 5 <  get_player_entity()->position.z)
 	{
-		self->position.z += 0.03;
+		self->position.z += 0.035;
 	}
 
 	gfc_matrix_make_translation(

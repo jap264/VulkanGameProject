@@ -27,9 +27,7 @@ void powerup_init()
 	powerup->ent = powerup_new();
 	gfc_word_cpy(powerup->ent->name, "powerup");
 	powerup->ent->type = _powerup;
-	/*powerup->ent->position = vector3d(-10, -8, 10);
-	gfc_matrix_make_translation(powerup->ent->modelMatrix, powerup->ent->position);*/
-	powerup->ent->radius = 4;
+	powerup->ent->radius = 10;
 
 	powerup_spawn(powerup);
 	powerup->ent->think = powerup_think;
@@ -38,9 +36,11 @@ void powerup_init()
 
 void powerup_spawn(Powerup *powerup)
 {
-	int rand = randNum(); //picks a rand num 0-9
+	int rand = randNum(); //picks a rand num 0-9, 5-9 has no powerup
+	
+	if (rand > 4) return;
 
-	if (rand < 2)
+	else if (rand == 0)
 	{
 		powerup->ent->model = gf3d_model_load("powerup_health");
 		gfc_word_cpy(powerup->ent->name, "powerup_health");
@@ -48,7 +48,7 @@ void powerup_spawn(Powerup *powerup)
 		powerup->ent->position = vector3d(-10, -6, 10); //top
 	}
 
-	else if (rand == 2 || rand == 3)
+	else if (rand == 1)
 	{
 		powerup->ent->model = gf3d_model_load("powerup_speed");
 		gfc_word_cpy(powerup->ent->name, "powerup_speed");
@@ -56,7 +56,7 @@ void powerup_spawn(Powerup *powerup)
 		powerup->ent->position = vector3d(-12, -8, 10); //left
 	}
 
-	else if (rand == 4 || rand == 5)
+	else if (rand == 2)
 	{
 		powerup->ent->model = gf3d_model_load("powerup_jump");
 		gfc_word_cpy(powerup->ent->name, "powerup_jump");
@@ -64,7 +64,7 @@ void powerup_spawn(Powerup *powerup)
 		powerup->ent->position = vector3d(-11, -10, 10); //bottom left
 	}
 
-	else if (rand == 6 || rand == 7)
+	else if (rand == 3)
 	{
 		powerup->ent->model = gf3d_model_load("powerup_invincibility");
 		gfc_word_cpy(powerup->ent->name, "powerup_invincibility");

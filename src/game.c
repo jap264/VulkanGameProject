@@ -20,6 +20,17 @@
 #include "enemy_cylinder.h"
 #include "enemy_sphere.h"
 
+static int integer(float f)
+{
+	int result = f;
+	return result;
+}
+
+static int randNum()
+{
+	return integer(gfc_crandom() * 5 + 5);
+}
+
 int main(int argc,char *argv[])
 {
     int done = 0;
@@ -35,6 +46,8 @@ int main(int argc,char *argv[])
 	Entity *world = NULL;
 
 	int spawnDelay = 0;
+
+	int gameOn = 0;
     
     for (a = 1; a < argc;a++)
     {
@@ -72,97 +85,133 @@ int main(int argc,char *argv[])
 	world->model = gf3d_model_load("world");
 	world->radius = 0;
 
-	//powerup_init();
-
-	Vector3D camera_rotation = playerEnt->position;
-
     while(!done)
     {
 		if (spawnDelay > 0) spawnDelay -= 1;
-		
+
 		SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
         //update game things here
 		
 		gf3d_entity_think_all(); //CALLS ALL THINK FUNCTIONS
 		
-		if (keys[SDL_SCANCODE_LEFT]) camera_rotation.x -= 0.001; //fix camera rotation
-		if (keys[SDL_SCANCODE_RIGHT])  camera_rotation.x += 0.001;
+		if (keys[SDL_SCANCODE_RETURN] && gameOn == 0)
+		{
+			gameOn = 1; //start spawning enemies
+			slog("Good Luck!");
+		}
+
+		if (player->status == 0) gameOn = 0; //player dies, stop spawning entities
+
+		if (gameOn == 1 && spawnDelay == 0)
+		{
+			int rand = randNum(); //picks a rand num 0-9
+
+			if (rand < 2)
+			{
+				brick_init();
+				spawnDelay = 3000;
+			}
+
+			else if (rand == 2 || rand == 3)
+			{
+				cone_init();
+				spawnDelay = 3000;
+			}
+
+			else if (rand == 4 || rand == 5)
+			{
+				cube_init();
+				spawnDelay = 3000;
+			}
+
+			else if (rand == 6 || rand == 7)
+			{
+				cylinder_init();
+				spawnDelay = 3000;
+			}
+
+			else
+			{
+				sphere_init();
+				spawnDelay = 3000;
+			}
+		}
 
 		//manual enemy spawn
 		if (keys[SDL_SCANCODE_1] && spawnDelay == 0)
 		{
 			brick_init();
-			spawnDelay = 3000;
+			spawnDelay = 1000;
 			slog("brick spawn");
 		}
 
 		if (keys[SDL_SCANCODE_2] && spawnDelay == 0)
 		{
 			cone_init();
-			spawnDelay = 3000;
+			spawnDelay = 1000;
 			slog("cone spawn");
 		}
 		
 		if (keys[SDL_SCANCODE_3] && spawnDelay == 0)
 		{
 			cube_init();
-			spawnDelay = 3000;
+			spawnDelay = 1000;
 			slog("cube spawn");
 		}
 		
 		if (keys[SDL_SCANCODE_4] && spawnDelay == 0)
 		{
 			cylinder_init();
-			spawnDelay = 3000;
+			spawnDelay = 1000;
 			slog("cylinder spawn");
 		}
 		
 		if (keys[SDL_SCANCODE_5] && spawnDelay == 0)
 		{
 			sphere_init();
-			spawnDelay = 3000;
+			spawnDelay = 1000;
 			slog("sphere spawn");
 		}
 
 		if (keys[SDL_SCANCODE_6] && spawnDelay == 0)
 		{
 			powerup_health();
-			spawnDelay = 3000;
+			spawnDelay = 1000;
 			slog("health powerup spawn");
 		}
 
 		if (keys[SDL_SCANCODE_7] && spawnDelay == 0)
 		{
 			powerup_speed();
-			spawnDelay = 3000;
+			spawnDelay = 1000;
 			slog("speed powerup spawn");
 		}
 
 		if (keys[SDL_SCANCODE_8] && spawnDelay == 0)
 		{
 			powerup_jump();
-			spawnDelay = 3000;
+			spawnDelay = 1000;
 			slog("jump powerup spawn");
 		}
 
 		if (keys[SDL_SCANCODE_9] && spawnDelay == 0)
 		{
 			powerup_invincibility();
-			spawnDelay = 3000;
+			spawnDelay = 1000;
 			slog("invincibility powerup spawn");
 		}
 
 		if (keys[SDL_SCANCODE_0] && spawnDelay == 0)
 		{
 			powerup_nuke();
-			spawnDelay = 3000;
+			spawnDelay = 1000;
 			slog("nuke powerup spawn");
 		}
 
-		if (keys[SDL_SCANCODE_RETURN] && player->status == 0)
+		if (keys[SDL_SCANCODE_BACKSPACE] && player->status == 0 && spawnDelay == 0)
 		{
-			player_init();
+			player_respawn(player);
 			playerEnt = get_player_entity();
 		}
 

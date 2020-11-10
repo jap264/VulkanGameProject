@@ -25,7 +25,7 @@ void brick_init()
 	brick->ent = brick_new();
 	gfc_word_cpy(brick->ent->name, "brick");
 	brick->ent->type = _enemy;
-	brick->ent->position = vector3d(0, 0, 8);
+	brick->ent->position = vector3d(-10, 296, 8);
 	gfc_matrix_make_translation(brick->ent->modelMatrix, brick->ent->position);
 	brick->ent->velocity = vector3d(0, 0, 0);
 	brick->ent->rotation = vector3d(0, 0, 0);

@@ -25,7 +25,7 @@ void cube_init()
 	cube->ent = cube_new();
 	gfc_word_cpy(cube->ent->name, "cube");
 	cube->ent->type = _enemy;
-	cube->ent->position = vector3d(0, 0, 12);
+	cube->ent->position = vector3d(300, 296, 12);
 	gfc_matrix_make_translation(cube->ent->modelMatrix, cube->ent->position);
 	cube->ent->velocity = vector3d(0, 0, 0);
 	cube->ent->rotation = vector3d(0, 0, 0);

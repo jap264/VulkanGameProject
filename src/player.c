@@ -38,7 +38,21 @@ int sprintCount = 0;
 int sprintCheck = 0;
 float sprintDistance = 0.12;
 enum type{_player, _powerup, _enemy};
+
+//----------
+//POWERUPS
+//----------
 enum pType{ pHealth, pSpeed, pJump, pInvincibility, pNuke};
+int pSpeedCheck = 0;
+int pSpeedDuration = 0;
+float pSpeedMultiplier = 1;
+
+int pJumpCheck = 0;
+int pJumpDuration = 0;
+float pJumpMultiplier = 1;
+
+int pInvinCheck = 0;
+int pInvinDuration = 0;
 
 static int integer(float f);
 static int randNum();
@@ -46,6 +60,28 @@ static int randNum();
 void player_init()
 {
 	player = (Player *)gfc_allocate_array(sizeof(Player), 1);
+
+	player->ent = player_new();
+	gfc_word_cpy(player->ent->name, "player");
+	player->ent->type = _player;
+	player->ent->position = vector3d(-10, -10, 8);
+	player->ent->velocity = vector3d(0, 0, 0);
+	player->ent->rotation = vector3d(0, 0, 0);
+	player->ent->radius = 2;
+	player->ent->model = gf3d_model_load("dino");
+	player->status = 1;
+	player->ent->think = player_think;
+	player->ent->die = player_free;
+	player->health = 3;
+}
+
+void player_respawn(Player *player)
+{
+	if (!player) return; 
+
+	//don't allocate memory again
+
+	slog("player respawned!");
 
 	player->ent = player_new();
 	gfc_word_cpy(player->ent->name, "player");
@@ -80,6 +116,9 @@ void player_collide(Entity *other)
 	slog("player collision: %s", other->name);
 	//slog("ent type: %i", other->type);
 
+	Entity *entList = gf3d_entity_get_list();
+	Uint32 entCount = gf3d_entity_get_entity_count();
+
 	//check if powerup
 	if (other->type == _powerup)
 	{
@@ -92,11 +131,26 @@ void player_collide(Entity *other)
 			if (player->health == 3) slog("player has max health!");
 		}
 
-		if (other->pType == pNuke)
+		else if (other->pType == pSpeed)
 		{
-			Entity *entList = gf3d_entity_get_list();
-			Uint32 entCount = gf3d_entity_get_entity_count();
+			pSpeedCheck = 1;
+			pSpeedDuration = 20000;
+		}
 
+		else if (other->pType == pJump)
+		{
+			pJumpCheck = 1;
+			pJumpDuration = 20000;
+		}
+
+		else if (other->pType == pInvincibility)
+		{
+			pInvinCheck = 1;
+			pInvinDuration = 20000;
+		}
+
+		else if (other->pType == pNuke)
+		{
 			for (Uint32 x = 0; x < entCount; x++)
 			{
 				if (!&entList[x]._inuse || &entList[x] == player->ent || &entList[x].type == _powerup || entList[x].radius == 0) continue;
@@ -111,14 +165,24 @@ void player_collide(Entity *other)
 	//check if enemy
 	else if (other->type == _enemy)
 	{
-		player->health--;
-		slog("enemy attacked player, health: %i", player->health);
+		if (pInvinCheck == 0)
+		{
+			player->health--;
+			slog("enemy attacked player, health: %i", player->health);
+		}
+
+		else slog("player is invincibile, and takes no damage");
 
 		if (player->health == 0)
 		{
 			slog("player has died");
 			player->status = 0;
-			gf3d_entity_free(player->ent);
+			for (Uint32 x = 0; x < entCount; x++)
+			{
+				if (!&entList[x]._inuse || entList[x].radius == 0) continue; //ignore the world
+				else gf3d_entity_free(&entList[x]); //kill all entities
+			}
+
 		}
 		//free the enemy that collides with the player
 		gf3d_entity_free(other);
@@ -131,6 +195,45 @@ void player_think(Entity *self)
 	const Uint8 *keys;
 	SDL_PumpEvents();
 	keys = SDL_GetKeyboardState(NULL);
+
+	//-----------------------------------
+	//POWERUP DURATIONS
+	//-----------------------------------
+
+	if (pSpeedDuration > 0) //Speed Powerup
+	{
+		pSpeedMultiplier = 2.5;
+		pSpeedDuration--;
+		//slog("%i", pSpeedDuration);
+	}
+
+	if (pSpeedDuration == 0)
+	{
+		pSpeedMultiplier = 1;
+		pSpeedCheck = 0;
+		//slog("speed powerup finished!");
+	}
+
+	if (pJumpDuration > 0) //Jump Powerup
+	{
+		pJumpMultiplier = 1.5;
+		pJumpDuration--;
+		//slog("%i", JumpDuration);
+	}
+
+	if (pJumpDuration == 0)
+	{
+		pJumpMultiplier = 1;
+		pJumpCheck = 0;
+	}
+
+	if (pInvinDuration > 0) //Invincibility Powerup
+	{
+		pInvinDuration--;
+		//slog("%i", pInvinDuration);
+	}
+
+	if (pInvinDuration == 0) pInvinCheck = 0;
 
 	//-----------------------------------
 	//DELAYS
@@ -159,7 +262,7 @@ void player_think(Entity *self)
 	//-----------------------------------
 
 	//FLYZONE
-	int jumpheight = 43;
+	int jumpheight = 43 * pJumpMultiplier;
 	if (self->position.x > -40 && self->position.x < 22 && self->position.y > -40 && self->position.y < 40) jumpheight = 80;
 
 	//FOREST
@@ -183,12 +286,20 @@ void player_think(Entity *self)
 	{
 		swimming = 1;
 		self->position.y -= 0.04;
+		gfc_matrix_make_translation(
+			self->modelMatrix,
+			self->position
+			);
 	}
 	//Bottom River
 	if (self->position.x > -295 && self->position.x < 295 && self->position.y > -295 && self->position.y < -230)
 	{
 		swimming = 1;
 		self->position.y += 0.04;
+		gfc_matrix_make_translation(
+			self->modelMatrix,
+			self->position
+			);
 	}
 
 	//Left River
@@ -196,6 +307,10 @@ void player_think(Entity *self)
 	{
 		swimming = 1;
 		self->position.x += 0.04;
+		gfc_matrix_make_translation(
+			self->modelMatrix,
+			self->position
+			);
 	}
 
 	//Right River
@@ -203,6 +318,10 @@ void player_think(Entity *self)
 	{
 		swimming = 1;
 		self->position.x -= 0.04;
+		gfc_matrix_make_translation(
+			self->modelMatrix,
+			self->position
+			);
 	}
 
 	//QUICKSAND
@@ -247,21 +366,35 @@ void player_think(Entity *self)
 
 	if (keys[SDL_SCANCODE_W] && self->position.y < 296)
 	{
+		gfc_matrix_rotate(self->modelMatrix, self->modelMatrix, 6, vector3d(0, 0, 1));
+
 		if (quicksand == 1)
 		{
-			self->position.y += 0.001;
+			self->position.y += (0.001 * pSpeedMultiplier);
+			gfc_matrix_make_translation(
+				self->modelMatrix,
+				self->position
+				);
 		}
 
 		else if (keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0)
 		{
-			self->position.y += sprintDistance;
+			self->position.y += (sprintDistance * pSpeedMultiplier);
+			gfc_matrix_make_translation(
+				self->modelMatrix,
+				self->position
+				);
 			sprintCount++;
 			//slog("sprint forward %f", sprintDistance);
 		}
 		
 		else
 		{
-			self->position.y += 0.07;
+			self->position.y += (0.07 * pSpeedMultiplier);
+			gfc_matrix_make_translation(
+				self->modelMatrix,
+				self->position
+				);
 			//slog("forward");
 		}
 	}
@@ -270,19 +403,31 @@ void player_think(Entity *self)
 	{
 		if (quicksand == 1)
 		{
-			self->position.x -= 0.001;
+			self->position.x -= (0.001 * pSpeedMultiplier);
+			gfc_matrix_make_translation(
+				self->modelMatrix,
+				self->position
+				);
 		}
 
 		else if (keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0)
 		{
-			self->position.x -= sprintDistance - 0.02;
+			self->position.x -= ((sprintDistance - 0.02) * pSpeedMultiplier);
+			gfc_matrix_make_translation(
+				self->modelMatrix,
+				self->position
+				);
 			sprintCount++;
 			//slog("sprint left %f", sprintDistance - 0.02);
 		}
 		
 		else
 		{
-			self->position.x -= 0.05;
+			self->position.x -= (0.05 * pSpeedMultiplier);
+			gfc_matrix_make_translation(
+				self->modelMatrix,
+				self->position
+				);
 			//slog("left");
 		}
 	}
@@ -291,19 +436,31 @@ void player_think(Entity *self)
 	{
 		if (quicksand == 1)
 		{
-			self->position.y -= 0.001;
+			self->position.y -= (0.001 * pSpeedMultiplier);
+			gfc_matrix_make_translation(
+				self->modelMatrix,
+				self->position
+				);
 		}
 
 		else if (keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0)
 		{
-			self->position.y -= sprintDistance;
+			self->position.y -= (sprintDistance * pSpeedMultiplier);
+			gfc_matrix_make_translation(
+				self->modelMatrix,
+				self->position
+				);
 			sprintCount++;
 			//slog("sprint backward %f", sprintDistance);
 		}
 		
 		else
 		{
-			self->position.y -= 0.07;
+			self->position.y -= (0.07 * pSpeedMultiplier);
+			gfc_matrix_make_translation(
+				self->modelMatrix,
+				self->position
+				);
 			//slog("backward");
 		}
 	}
@@ -312,19 +469,31 @@ void player_think(Entity *self)
 	{
 		if (quicksand == 1)
 		{
-			self->position.x += 0.001;
+			self->position.x += (0.001 * pSpeedMultiplier);
+			gfc_matrix_make_translation(
+				self->modelMatrix,
+				self->position
+				);
 		}
 
 		else if (keys[SDL_SCANCODE_LSHIFT] && sprintCheck == 0)
 		{
-			self->position.x += sprintDistance - 0.02;
+			self->position.x += ((sprintDistance - 0.02) * pSpeedMultiplier);
+			gfc_matrix_make_translation(
+				self->modelMatrix,
+				self->position
+				);
 			sprintCount++;
 			//slog("sprint right %f", sprintDistance - 0.02);
 		}
 		
 		else
 		{
-			self->position.x += 0.05;
+			self->position.x += (0.05 * pSpeedMultiplier);
+			gfc_matrix_make_translation(
+				self->modelMatrix,
+				self->position
+				);
 			//slog("right");
 		}
 	}
@@ -342,12 +511,17 @@ void player_think(Entity *self)
 		//slog("x: %f, y: %f", self->position.x, self->position.y);
 	}
 
-	if (jump == 2 && self->position.z < jumpheight)
+	if (jump == 2 && self->position.z < (jumpheight * pJumpMultiplier))
 	{
-		self->position.z += 0.1;
+		if (pJumpCheck == 1) self->position.z += 0.15;
+		else self->position.z += 0.1;
+		gfc_matrix_make_translation(
+			self->modelMatrix,
+			self->position
+			);
 	}
 
-	if (self->position.z >= jumpheight)
+	if (self->position.z >= (jumpheight * pJumpMultiplier))
 	{
 		jump = 1;
 		delayJump = 3000;
@@ -357,18 +531,32 @@ void player_think(Entity *self)
 	{
 		if (keys[SDL_SCANCODE_SPACE])
 		{
-			self->position.z -= 0.008;
+			if (pJumpCheck == 1) self->position.z -= 0.005;
+			else self->position.z -= 0.008;
+			gfc_matrix_make_translation(
+				self->modelMatrix,
+				self->position
+				);
 		}
 		
 		else
 		{
-			self->position.z -= 0.05;
+			if (pJumpCheck == 1) self->position.z -= 0.03;
+			else self->position.z -= 0.05;
+			gfc_matrix_make_translation(
+				self->modelMatrix,
+				self->position
+				);
 		}
 	}
 
 	if (self->position.z <= 8)
 	{
 		self->position.z = 8;
+		gfc_matrix_make_translation(
+			self->modelMatrix,
+			self->position
+			);
 		jump = 0;
 	}
 
@@ -388,6 +576,10 @@ void player_think(Entity *self)
 	if (dash == 1 && ((self->position.y - beforeD) < 80))
 	{
 		self->position.y += 0.25;
+		gfc_matrix_make_translation(
+			self->modelMatrix,
+			self->position
+			);
 	}
 
 	if (self->position.y - beforeD >= 80)
@@ -411,6 +603,10 @@ void player_think(Entity *self)
 	if (sidestep1 == 1 && ((self->position.x - beforeSS) > -60))
 	{
 		self->position.x -= 0.25;
+		gfc_matrix_make_translation(
+			self->modelMatrix,
+			self->position
+			);
 	}
 
 	if (self->position.x - beforeSS <= -60)
@@ -430,6 +626,10 @@ void player_think(Entity *self)
 	if (sidestep2 == 1 && ((self->position.x - beforeSS) < 60))
 	{
 		self->position.x += 0.25;
+		gfc_matrix_make_translation(
+			self->modelMatrix,
+			self->position
+			);
 	}
 
 	if (self->position.x - beforeSS >= 60)
@@ -438,11 +638,6 @@ void player_think(Entity *self)
 	}
 
 	//-------------------------------
-
-	gfc_matrix_make_translation(
-		self->modelMatrix,
-		self->position
-		);
 }
 
 Entity *get_player_entity()

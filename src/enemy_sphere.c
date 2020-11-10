@@ -27,7 +27,7 @@ void sphere_init()
 	sphere->ent = sphere_new();
 	gfc_word_cpy(sphere->ent->name, "sphere");
 	sphere->ent->type = _enemy;
-	sphere->ent->position = vector3d(0, 0, 8);
+	sphere->ent->position = vector3d(-300, -305, 8);
 	gfc_matrix_make_translation(sphere->ent->modelMatrix, sphere->ent->position);
 	sphere->ent->velocity = vector3d(0, 0, 0);
 	sphere->ent->rotation = vector3d(0, 0, 0);

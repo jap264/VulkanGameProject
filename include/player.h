@@ -17,6 +17,11 @@ typedef struct Player_S
 void player_init();
 
 /*
+*	@brief respawns the player entity
+*/
+void player_respawn(Player *player);
+
+/*
 *	@brief initializes the player entity
 */
 Entity *player_new();
