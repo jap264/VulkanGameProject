@@ -573,16 +573,16 @@ void player_think(Entity *self)
 		slog("dashed");
 	}
 
-	if (dash == 1 && ((self->position.y - beforeD) < 80))
+	if (dash == 1 && ((self->position.y - beforeD) > -80))
 	{
-		self->position.y += 0.25;
+		self->position.y -= 0.8;
 		gfc_matrix_make_translation(
 			self->modelMatrix,
 			self->position
 			);
 	}
 
-	if (self->position.y - beforeD >= 80)
+	if (self->position.y - beforeD <= -80)
 	{
 		dash = 0;
 	}
@@ -602,7 +602,7 @@ void player_think(Entity *self)
 
 	if (sidestep1 == 1 && ((self->position.x - beforeSS) > -60))
 	{
-		self->position.x -= 0.25;
+		self->position.x -= 0.5;
 		gfc_matrix_make_translation(
 			self->modelMatrix,
 			self->position
@@ -625,7 +625,7 @@ void player_think(Entity *self)
 
 	if (sidestep2 == 1 && ((self->position.x - beforeSS) < 60))
 	{
-		self->position.x += 0.25;
+		self->position.x += 0.5;
 		gfc_matrix_make_translation(
 			self->modelMatrix,
 			self->position

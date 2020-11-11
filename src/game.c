@@ -162,16 +162,16 @@ int main(int argc,char *argv[])
 		
 		if (keys[SDL_SCANCODE_4] && spawnDelay == 0)
 		{
-			cylinder_init();
+			sphere_init();
 			spawnDelay = 1000;
-			slog("cylinder spawn");
+			slog("sphere spawn");
 		}
 		
 		if (keys[SDL_SCANCODE_5] && spawnDelay == 0)
 		{
-			sphere_init();
+			cylinder_init();
 			spawnDelay = 1000;
-			slog("sphere spawn");
+			slog("cylinder spawn");
 		}
 
 		if (keys[SDL_SCANCODE_6] && spawnDelay == 0)
