@@ -97,6 +97,12 @@ int main(int argc,char *argv[])
 		
 		if (keys[SDL_SCANCODE_RETURN] && gameOn == 0)
 		{
+			if (player->status == 0)
+			{
+				player_respawn(player);
+				playerEnt = get_player_entity();
+			}
+
 			gameOn = 1; //start spawning enemies
 			slog("Good Luck!");
 		}
