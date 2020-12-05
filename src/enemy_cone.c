@@ -52,33 +52,36 @@ void cone_free(Cone *cone)
 void cone_think(Entity *self)
 {
 	if (!self) return;
-	follow(self, get_player_entity(), 0.035);
-	
-	//set follow code for the z direction
-	if (self->position.z - 5 >  get_player_entity()->position.z)
+	if (get_player()->hiding == 0)
 	{
-		self->position.z -= 0.035;
+		follow(self, get_player_entity(), 0.035);
+
+		//set follow code for the z direction
+		if (self->position.z - 5 > get_player_entity()->position.z)
+		{
+			self->position.z -= 0.035;
+		}
+
+		if (self->position.z - 5 < get_player_entity()->position.z)
+		{
+			self->position.z += 0.035;
+		}
+
+		gfc_matrix_make_translation(
+			self->modelMatrix,
+			self->position
+			);
+
+		rotation += 0.001;
+
+		gfc_matrix_rotate( //creates spinning effect for cone
+			self->modelMatrix,
+			self->modelMatrix,
+			rotation,
+			vector3d(0, 0, 1)
+			);
+		//slog("cone position: %f", self->position.z);
 	}
-
-	if (self->position.z - 5 <  get_player_entity()->position.z)
-	{
-		self->position.z += 0.035;
-	}
-
-	gfc_matrix_make_translation(
-		self->modelMatrix,
-		self->position
-		);
-
-	rotation += 0.001;
-
-	gfc_matrix_rotate( //creates spinning effect for cone
-		self->modelMatrix,
-		self->modelMatrix,
-		rotation,
-		vector3d(0, 0, 1)
-		);
-	//slog("cone position: %f", self->position.z);
 }
 
 Entity *get_cone_entity()

@@ -52,15 +52,18 @@ void cube_free(Cube *cube)
 void cube_think(Entity *self)
 {
 	if (!self) return;
-	follow(self, get_player_entity(), 0.03);
+	if (get_player()->hiding == 0)
+	{
+		follow(self, get_player_entity(), 0.03);
 
-	rotation -= 0.0015;
+		rotation -= 0.0015;
 
-	gfc_matrix_rotate(
-		self->modelMatrix,
-		self->modelMatrix,
-		rotation,
-		vector3d(0, 0, 1));
+		gfc_matrix_rotate(
+			self->modelMatrix,
+			self->modelMatrix,
+			rotation,
+			vector3d(0, 0, 1));
+	}
 }
 
 Entity *get_cube_entity()

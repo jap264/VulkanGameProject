@@ -141,7 +141,24 @@ void gf3d_entity_think_all()
 					player_collide(&gf3d_entity.entity_list[x]);
 				}
 
-				else if (gf3d_entity.entity_list[x].type == 1 || gf3d_entity.entity_list[i].type == 1) continue; // ignore collisions between powerups vs. other powerups & enemies
+				else if (gf3d_entity.entity_list[x].type == 1 || // ignore collisions between powerups vs. other powerups & enemies
+					gf3d_entity.entity_list[i].type == 1 ||
+					gf3d_entity.entity_list[x].type == 4 || //ignore collisions between hidebox vs. enemies
+					gf3d_entity.entity_list[i].type == 4 ||
+					gf3d_entity.entity_list[x].type == 5 || //ignore collisions between telebox vs. enemies
+					gf3d_entity.entity_list[i].type == 5) continue;
+
+				else if (gf3d_entity.entity_list[x].type == 3) //if spikebox collides with an enemy
+				{
+					gf3d_entity_free(&gf3d_entity.entity_list[i]);
+					get_player()->points += 1;
+				}
+
+				else if (gf3d_entity.entity_list[i].type == 3) //if spikebox collides with an enemy
+				{
+					gf3d_entity_free(&gf3d_entity.entity_list[x]);
+					get_player()->points += 1;
+				}
 
 				else //two enemies colliding
 				{
@@ -151,6 +168,7 @@ void gf3d_entity_think_all()
 					gf3d_entity_free(&gf3d_entity.entity_list[x]); 
 					gf3d_entity_free(&gf3d_entity.entity_list[i]);
 					powerup_init();
+					get_player()->points += 2;
 				}
 			}
 		}

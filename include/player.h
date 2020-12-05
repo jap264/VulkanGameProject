@@ -8,6 +8,8 @@ typedef struct Player_S
 	Entity *ent;
 	int		health;
 	int		status;
+	int		hiding;
+	int		points;
 
 }Player;
 
@@ -20,6 +22,11 @@ void player_init();
 *	@brief respawns the player entity
 */
 void player_respawn(Player *player);
+
+/*
+*	@brief player dies
+*/
+void player_die();
 
 /*
 *	@brief initializes the player entity

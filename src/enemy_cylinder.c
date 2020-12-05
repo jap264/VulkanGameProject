@@ -52,15 +52,18 @@ void cylinder_free(Cylinder *cylinder)
 void cylinder_think(Entity *self)
 {
 	if (!self) return;
-	follow(self, get_player_entity(), 0.04);
+	if (get_player()->hiding == 0)
+	{
+		follow(self, get_player_entity(), 0.04);
 
-	rotation -= 0.001;
+		rotation -= 0.001;
 
-	gfc_matrix_rotate(
-		self->modelMatrix,
-		self->modelMatrix,
-		rotation,
-		vector3d(0, 0, 1));
+		gfc_matrix_rotate(
+			self->modelMatrix,
+			self->modelMatrix,
+			rotation,
+			vector3d(0, 0, 1));
+	}
 }
 
 Entity *get_cylinder_entity()

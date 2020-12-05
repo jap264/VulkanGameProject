@@ -214,6 +214,11 @@ void gfc_matrix_view(
     
 }
 
+void gfc_matrix_scale(Matrix4 out, Vector3D scale, Matrix4 in)
+{
+
+}
+
 void gfc_matrix_make_translation(
     Matrix4 out,
     Vector3D move

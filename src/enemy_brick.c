@@ -52,15 +52,18 @@ void brick_free(Brick *brick)
 void brick_think(Entity *self)
 {
 	if (!self) return;
-	follow(self, get_player_entity(), 0.02);
+	if (get_player()->hiding == 0)
+	{
+		follow(self, get_player_entity(), 0.02);
 
-	rotation -= 0.001;
+		rotation -= 0.001;
 
-	gfc_matrix_rotate(
-		self->modelMatrix,
-		self->modelMatrix,
-		rotation,
-		vector3d(1, 1, 1));
+		gfc_matrix_rotate(
+			self->modelMatrix,
+			self->modelMatrix,
+			rotation,
+			vector3d(1, 1, 1));
+	}
 }
 
 Entity *get_brick_entity()

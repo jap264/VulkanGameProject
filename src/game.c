@@ -85,6 +85,12 @@ int main(int argc,char *argv[])
 	world->model = gf3d_model_load("world");
 	world->radius = 0;
 
+	//spikebox spawn
+	spikebox_init(vector3d(50, 50, 8));
+
+	//hidebox spawn
+	hidebox_init(vector3d(-50, -50, 8));
+
     while(!done)
     {
 		if (spawnDelay > 0) spawnDelay -= 1;
@@ -180,6 +186,7 @@ int main(int argc,char *argv[])
 			slog("cylinder spawn");
 		}
 
+		//manual powerup spawn
 		if (keys[SDL_SCANCODE_6] && spawnDelay == 0)
 		{
 			powerup_health();
@@ -215,6 +222,7 @@ int main(int argc,char *argv[])
 			slog("nuke powerup spawn");
 		}
 
+		//manual respawn
 		if (keys[SDL_SCANCODE_BACKSPACE] && player->status == 0 && spawnDelay == 0)
 		{
 			player_respawn(player);

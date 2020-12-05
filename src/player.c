@@ -37,7 +37,7 @@ int swimming = 0;
 int sprintCount = 0;
 int sprintCheck = 0;
 float sprintDistance = 0.12;
-enum type{_player, _powerup, _enemy};
+enum type{_player, _powerup, _enemy, _spikebox, _hidebox, _telebox};
 
 //----------
 //POWERUPS
@@ -70,9 +70,11 @@ void player_init()
 	player->ent->radius = 2;
 	player->ent->model = gf3d_model_load("dino");
 	player->status = 1;
+	player->hiding = 0;
 	player->ent->think = player_think;
 	player->ent->die = player_free;
 	player->health = 3;
+	player->points = 0;
 }
 
 void player_respawn(Player *player)
@@ -97,6 +99,24 @@ void player_respawn(Player *player)
 	player->health = 3;
 }
 
+void player_die()
+{
+	slog("player has died");
+	player->status = 0;
+	Entity *entList = gf3d_entity_get_list();
+	Uint32 entCount = gf3d_entity_get_entity_count();
+	for (Uint32 x = 0; x < entCount; x++)
+	{
+		if (!&entList[x]._inuse || 
+			entList[x].radius == 0 || 
+			entList[x].type == 3 || 
+			entList[x].type == 4 ||
+			entList[x].type == 5) continue; //ignore the world and boxes
+
+		else gf3d_entity_free(&entList[x]); //kill all entities
+	}
+}
+
 Entity *player_new()
 {
 	return gf3d_entity_new();
@@ -113,11 +133,8 @@ void player_free(Player *player)
 void player_collide(Entity *other)
 {
 	if (!other) return;
-	slog("player collision: %s", other->name);
+	//slog("player collision: %s", other->name);
 	//slog("ent type: %i", other->type);
-
-	Entity *entList = gf3d_entity_get_list();
-	Uint32 entCount = gf3d_entity_get_entity_count();
 
 	//check if powerup
 	if (other->type == _powerup)
@@ -151,6 +168,8 @@ void player_collide(Entity *other)
 
 		else if (other->pType == pNuke)
 		{
+			Entity *entList = gf3d_entity_get_list();
+			Uint32 entCount = gf3d_entity_get_entity_count();
 			for (Uint32 x = 0; x < entCount; x++)
 			{
 				if (!&entList[x]._inuse || &entList[x] == player->ent || &entList[x].type == _powerup || entList[x].radius == 0) continue;
@@ -171,27 +190,31 @@ void player_collide(Entity *other)
 			slog("enemy attacked player, health: %i", player->health);
 		}
 
-		else slog("player is invincibile, and takes no damage");
+		else slog("player is invincible, and takes no damage");
 
 		if (player->health == 0)
 		{
-			slog("player has died");
-			player->status = 0;
-			for (Uint32 x = 0; x < entCount; x++)
-			{
-				if (!&entList[x]._inuse || entList[x].radius == 0) continue; //ignore the world
-				else gf3d_entity_free(&entList[x]); //kill all entities
-			}
-
+			player_die();
 		}
 		//free the enemy that collides with the player
 		gf3d_entity_free(other);
 	}
 
+	else if (other->type == _spikebox)
+	{
+		player_die();
+	}
+
+	else if (other->type == _hidebox)
+	{
+		player->hiding = 1;
+	}
 }
 
 void player_think(Entity *self)
 {
+	player->hiding = 0;
+
 	const Uint8 *keys;
 	SDL_PumpEvents();
 	keys = SDL_GetKeyboardState(NULL);

@@ -54,28 +54,31 @@ void sphere_free(Sphere *sphere)
 void sphere_think(Entity *self)
 {
 	if (!self) return;
-	follow(self, get_player_entity(), 0.025);
+	if (get_player()->hiding == 0)
+	{
+		follow(self, get_player_entity(), 0.025);
 
-	//set bouncing animation
-	if (self->position.z <= 8) jumping = 0;
-	if (jumping == 0) self->position.z += 0.015;
-	if (self->position.z >= 24) jumping = 1;
-	if (jumping == 1) self->position.z -= 0.018;
+		//set bouncing animation
+		if (self->position.z <= 8) jumping = 0;
+		if (jumping == 0) self->position.z += 0.015;
+		if (self->position.z >= 24) jumping = 1;
+		if (jumping == 1) self->position.z -= 0.018;
 
-	gfc_matrix_make_translation(
-		self->modelMatrix,
-		self->position
-		);
+		gfc_matrix_make_translation(
+			self->modelMatrix,
+			self->position
+			);
 
-	rotation -= 0.001;
+		rotation -= 0.001;
 
-	gfc_matrix_rotate( //creates spinning effect for sphere
-		self->modelMatrix,
-		self->modelMatrix,
-		rotation,
-		vector3d(1, -1, 1)
-		);
-	//slog("sphere position: %f", self->position.z);
+		gfc_matrix_rotate( //creates spinning effect for sphere
+			self->modelMatrix,
+			self->modelMatrix,
+			rotation,
+			vector3d(1, -1, 1)
+			);
+		//slog("sphere position: %f", self->position.z);
+	}
 }
 
 Entity *get_sphere_entity()
