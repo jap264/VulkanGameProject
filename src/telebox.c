@@ -29,7 +29,7 @@ void telebox_init(Vector3D *position)
 	gfc_matrix_make_translation(telebox->ent->modelMatrix, telebox->ent->position);
 	telebox->ent->velocity = vector3d(0, 0, 0);
 	telebox->ent->rotation = vector3d(0, 0, 0);
-	telebox->ent->radius = 6;
+	telebox->ent->radius = 10;
 
 	telebox->ent->model = gf3d_model_load("telebox");
 	telebox->ent->think = telebox_think;
@@ -56,7 +56,7 @@ void telebox_think(Entity *self)
 	gfc_matrix_rotate(
 		self->modelMatrix,
 		self->modelMatrix,
-		0.0001,
+		0.0004,
 		vector3d(0, 0, 1));
 }
 

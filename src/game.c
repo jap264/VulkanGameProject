@@ -91,6 +91,9 @@ int main(int argc,char *argv[])
 	//hidebox spawn
 	hidebox_init(vector3d(-50, -50, 8));
 
+	//telebox spawn
+	telebox_init(vector3d(50, -50, 12));
+
     while(!done)
     {
 		if (spawnDelay > 0) spawnDelay -= 1;

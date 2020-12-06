@@ -209,6 +209,58 @@ void player_collide(Entity *other)
 	{
 		player->hiding = 1;
 	}
+
+	else if (other->type == _telebox)
+	{
+		const Uint8 *keys;
+		SDL_PumpEvents();
+		keys = SDL_GetKeyboardState(NULL);
+
+		if (keys[SDL_SCANCODE_W] && keys[SDL_SCANCODE_A]) //Up left
+		{
+			get_player_entity()->position = vector3d(234,-224,8);
+		}
+
+		else if (keys[SDL_SCANCODE_W] && keys[SDL_SCANCODE_D]) //Up right
+		{
+			get_player_entity()->position = vector3d(-234,-224,8);
+		}
+
+		else if (keys[SDL_SCANCODE_S] && keys[SDL_SCANCODE_A]) //Down left
+		{
+			get_player_entity()->position = vector3d(234,224,8);
+		}
+
+		else if (keys[SDL_SCANCODE_S] && keys[SDL_SCANCODE_D]) //Down right
+		{
+			get_player_entity()->position = vector3d(-234,224,8);
+		}
+
+		else if (keys[SDL_SCANCODE_W]) //Up
+		{
+			get_player_entity()->position = vector3d(0,-224,8);
+		}
+
+		else if (keys[SDL_SCANCODE_A]) //Left
+		{
+			get_player_entity()->position = vector3d(234,0,8);
+		}
+
+		else if (keys[SDL_SCANCODE_S]) //Down
+		{
+			get_player_entity()->position = vector3d(0,224,8);
+		}
+
+		else if (keys[SDL_SCANCODE_D]) //Right
+		{
+			get_player_entity()->position = vector3d(-234,0,8);
+		}
+
+		gfc_matrix_make_translation(
+			get_player_entity()->modelMatrix,
+			get_player_entity()->position
+			);
+	}
 }
 
 void player_think(Entity *self)

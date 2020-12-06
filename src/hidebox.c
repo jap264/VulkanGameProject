@@ -29,7 +29,7 @@ void hidebox_init(Vector3D *position)
 	gfc_matrix_make_translation(hidebox->ent->modelMatrix, hidebox->ent->position);
 	hidebox->ent->velocity = vector3d(0, 0, 0);
 	hidebox->ent->rotation = vector3d(0, 0, 0);
-	hidebox->ent->radius = 6;
+	hidebox->ent->radius = 3;
 
 	hidebox->ent->model = gf3d_model_load("hidebox");
 	hidebox->ent->think = hidebox_think;

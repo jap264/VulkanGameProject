@@ -56,7 +56,7 @@ void spikebox_think(Entity *self)
 	gfc_matrix_rotate(
 		self->modelMatrix,
 		self->modelMatrix,
-		0.001,
+		0.0015,
 		vector3d(0, 0, 1));
 }
 
