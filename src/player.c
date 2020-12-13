@@ -172,7 +172,7 @@ void player_collide(Entity *other)
 			Uint32 entCount = gf3d_entity_get_entity_count();
 			for (Uint32 x = 0; x < entCount; x++)
 			{
-				if (!&entList[x]._inuse || &entList[x] == player->ent || &entList[x].type == _powerup || entList[x].radius == 0) continue;
+				if (!&entList[x]._inuse || &entList[x] == player->ent || &entList[x].type == _powerup || &entList[x].type > 2 || entList[x].radius == 0) continue;
 				else gf3d_entity_free(&entList[x]);
 			}
 		}
@@ -197,11 +197,14 @@ void player_collide(Entity *other)
 			player_die();
 		}
 		//free the enemy that collides with the player
+		sounds_play_playerhit();
+		sounds_play_enemyhit();
 		gf3d_entity_free(other);
 	}
 
 	else if (other->type == _spikebox)
 	{
+		sounds_play_playerhit();
 		player_die();
 	}
 
@@ -260,6 +263,8 @@ void player_collide(Entity *other)
 			get_player_entity()->modelMatrix,
 			get_player_entity()->position
 			);
+
+		sounds_play_teleport();
 	}
 }
 

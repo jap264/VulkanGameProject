@@ -3,6 +3,7 @@
 #include "gf3d_entity.h"
 #include "player.h"
 #include "powerup.h"
+#include "sounds.h"
 
 typedef struct
 {
@@ -85,6 +86,8 @@ Entity  *gf3d_entity_new()
 
 int checkCollision(Entity *self, Entity *other)
 {
+	if (!self || !other) return 0;
+	
 	float distance_x = self->position.x - other->position.x;
 	float distance_y = self->position.y - other->position.y;
 	float distance_z = self->position.z - other->position.z;
@@ -151,12 +154,14 @@ void gf3d_entity_think_all()
 				else if (gf3d_entity.entity_list[x].type == 3) //if spikebox collides with an enemy
 				{
 					gf3d_entity_free(&gf3d_entity.entity_list[i]);
+					sounds_play_enemyhit();
 					get_player()->points += 1;
 				}
 
 				else if (gf3d_entity.entity_list[i].type == 3) //if spikebox collides with an enemy
 				{
 					gf3d_entity_free(&gf3d_entity.entity_list[x]);
+					sounds_play_enemyhit();
 					get_player()->points += 1;
 				}
 
@@ -165,6 +170,7 @@ void gf3d_entity_think_all()
 					slog("two enemies have collided");
 					/*slog("x ent type: %i", &gf3d_entity.entity_list[x].type);
 					slog("i ent type: %i", &gf3d_entity.entity_list[i].type);*/
+					sounds_play_enemyhit();
 					gf3d_entity_free(&gf3d_entity.entity_list[x]); 
 					gf3d_entity_free(&gf3d_entity.entity_list[i]);
 					powerup_init();

@@ -11,8 +11,10 @@
 #include "gf3d_camera.h"
 #include "gf3d_texture.h"
 #include "gf3d_entity.h"
+#include "gfc_audio.h"
 
 #include "player.h"
+#include "sounds.h"
 #include "powerup.h"
 #include "enemy_cone.h"
 #include "enemy_cube.h"
@@ -71,6 +73,10 @@ int main(int argc,char *argv[])
 
 	
 	gf3d_entity_init(1024);
+
+	//Sounds
+	sounds_init();
+	sounds_play_gamesound();
 
     // main game loop
 	slog("gf3d main loop begin");
