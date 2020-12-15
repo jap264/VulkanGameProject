@@ -11,20 +11,20 @@
 #define GF3D_VGRAPHICS_DISCRETE 1   //Choosing whether to use discrete [1] or integrated graphics [0]
 
 /**
- * @brief init Vulkan / SDL, setup device and initialize infrastructure for 3d graphics
- */
+* @brief init Vulkan / SDL, setup device and initialize infrastructure for 3d graphics
+*/
 void gf3d_vgraphics_init(
-    char *windowName,
-    int renderWidth,
-    int renderHeight,
-    Vector4D bgcolor,
-    Bool fullscreen,
-    Bool enableValidation
-);
+	char *windowName,
+	int renderWidth,
+	int renderHeight,
+	Vector4D bgcolor,
+	Bool fullscreen,
+	Bool enableValidation
+	);
 
 /**
- * @brief After initialization 
- */
+* @brief After initialization
+*/
 VkDevice gf3d_vgraphics_get_default_logical_device();
 
 VkPhysicalDevice gf3d_vgraphics_get_default_physical_device();

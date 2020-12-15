@@ -11,6 +11,7 @@
 #include "gf3d_camera.h"
 #include "gf3d_texture.h"
 #include "gf3d_entity.h"
+#include "gf3d_sprite.h"
 #include "gfc_audio.h"
 
 #include "player.h"
@@ -38,9 +39,13 @@ int main(int argc,char *argv[])
     int done = 0;
 	int a;
     Uint8 validate = 0;
+	float frame = 0;
     const Uint8 * keys;
     Uint32 bufferFrame = 0;
     VkCommandBuffer commandBuffer;
+
+	Model *model = NULL;
+	Matrix4 modelMat;
 
 	Entity *playerEnt = NULL;
 	Player *player;
@@ -240,17 +245,17 @@ int main(int argc,char *argv[])
 
 		gf3d_vgraphics_thirdperson_camera(playerEnt->position);
 
-        // configure render command for graphics command pool
-        // for each mesh, get a command and configure it from the pool
-        bufferFrame = gf3d_vgraphics_render_begin();
-			gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_pipeline(),bufferFrame);
-            commandBuffer = gf3d_command_rendering_begin(bufferFrame);
+		// configure render command for graphics command pool
+		// for each mesh, get a command and configure it from the pool
+		bufferFrame = gf3d_vgraphics_render_begin();
+		gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_pipeline(), bufferFrame);
+		commandBuffer = gf3d_command_rendering_begin(bufferFrame);
 
-				gf3d_entity_draw_all(bufferFrame, commandBuffer);
-                
-            gf3d_command_rendering_end(commandBuffer);
-            
-        gf3d_vgraphics_render_end(bufferFrame);
+		gf3d_entity_draw_all(bufferFrame, commandBuffer);
+
+		gf3d_command_rendering_end(commandBuffer);
+
+		gf3d_vgraphics_render_end(bufferFrame);
 
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
     }    

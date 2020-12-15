@@ -33,7 +33,7 @@ void gf3d_entity_close()
 	if (gf3d_entity.entity_list != NULL)
 	{
 		for (i = 0; i < gf3d_entity.entity_count; i++)
-		{	
+		{
 			gf3d_entity_free(&gf3d_entity.entity_list[i]);
 		}
 		free(gf3d_entity.entity_list);
@@ -87,7 +87,7 @@ Entity  *gf3d_entity_new()
 int checkCollision(Entity *self, Entity *other)
 {
 	if (!self || !other) return 0;
-	
+
 	float distance_x = self->position.x - other->position.x;
 	float distance_y = self->position.y - other->position.y;
 	float distance_z = self->position.z - other->position.z;
@@ -137,7 +137,7 @@ void gf3d_entity_think_all()
 					//slog("x is the player");
 					player_collide(&gf3d_entity.entity_list[i]);
 				}
-				
+
 				else if (&gf3d_entity.entity_list[i] == get_player_entity()) //second entity is the player
 				{
 					//slog("i is the player");
@@ -171,7 +171,7 @@ void gf3d_entity_think_all()
 					/*slog("x ent type: %i", &gf3d_entity.entity_list[x].type);
 					slog("i ent type: %i", &gf3d_entity.entity_list[i].type);*/
 					sounds_play_enemyhit();
-					gf3d_entity_free(&gf3d_entity.entity_list[x]); 
+					gf3d_entity_free(&gf3d_entity.entity_list[x]);
 					gf3d_entity_free(&gf3d_entity.entity_list[i]);
 					powerup_init();
 					get_player()->points += 2;
