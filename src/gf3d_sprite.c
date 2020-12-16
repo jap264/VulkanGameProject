@@ -39,7 +39,7 @@ typedef struct
 	VkVertexInputBindingDescription     bindingDescription;
 	Command                            *stagingCommandBuffer;
 }SpriteManager;
-/*
+
 void gf3d_sprite_update_basic_descriptor_set(Sprite *model, VkDescriptorSet descriptorSet, Uint32 chainIndex, Matrix4 modelMat, Uint32 frame);
 void gf3d_sprite_create_uniform_buffer(Sprite *sprite);
 void gf3d_sprite_create_vertex_buffer(Sprite *sprite);
@@ -412,5 +412,5 @@ void gf3d_sprite_create_uniform_buffer(Sprite *sprite)
 		gf3d_vgraphics_create_buffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &sprite->uniformBuffers[i], &sprite->uniformBuffersMemory[i]);
 	}
 }
-*/
+
 /*eol@eof*/

@@ -46,11 +46,22 @@ int main(int argc,char *argv[])
 
 	Model *model = NULL;
 	Matrix4 modelMat;
+	gfc_matrix_identity(modelMat);
+	gfc_matrix_rotate(
+		modelMat,
+		modelMat,
+		M_PI / 2,
+		vector3d(1, 0, 0));
 
 	Entity *playerEnt = NULL;
 	Player *player;
 
 	Entity *world = NULL;
+
+	Sprite *mouse = NULL;
+	int mousex, mousey;
+	Uint32 mouseFrame = 0;
+	//mouse = gf3d_sprite_load("images/pointer.png",32,32, 16);
 
 	int spawnDelay = 0;
 
@@ -99,10 +110,10 @@ int main(int argc,char *argv[])
 	//spikebox spawn
 	spikebox_init(vector3d(50, 50, 8));
 
-	//hidebox spawn
+	////hidebox spawn
 	hidebox_init(vector3d(-50, -50, 8));
 
-	//telebox spawn
+	////telebox spawn
 	telebox_init(vector3d(50, -50, 12));
 
     while(!done)
@@ -111,7 +122,13 @@ int main(int argc,char *argv[])
 
 		SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
-        //update game things here
+		SDL_GetMouseState(&mousex, &mousey);
+		//slog("mouse (%i,%i)",mousex,mousey);
+
+		frame = frame + 0.05;
+		if (frame >= 24) frame = 0;
+		mouseFrame = (mouseFrame + 1) % 16;
+		//update game things here
 		
 		gf3d_entity_think_all(); //CALLS ALL THINK FUNCTIONS
 		
@@ -248,6 +265,27 @@ int main(int argc,char *argv[])
 		// configure render command for graphics command pool
 		// for each mesh, get a command and configure it from the pool
 		bufferFrame = gf3d_vgraphics_render_begin();
+
+		// for each mesh, get a command and configure it from the pool
+		gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_model_pipeline(), bufferFrame);
+		//gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_overlay_pipeline(), bufferFrame);
+
+		commandBuffer = gf3d_command_rendering_begin(bufferFrame, gf3d_vgraphics_get_graphics_model_pipeline());
+		gf3d_entity_draw_all(bufferFrame, commandBuffer);
+		//gf3d_model_draw(model, bufferFrame, commandBuffer, modelMat, (Uint32)frame);
+
+		gf3d_command_rendering_end(commandBuffer);
+		
+		// 2D overlay rendering
+		commandBuffer = gf3d_command_rendering_begin(bufferFrame, gf3d_vgraphics_get_graphics_overlay_pipeline());
+
+		//gf3d_sprite_draw(mouse, vector2d(mousex, mousey), vector2d(1,1), mouseFrame, bufferFrame, commandBuffer);
+
+		gf3d_command_rendering_end(commandBuffer);
+
+		gf3d_vgraphics_render_end(bufferFrame);
+
+		/* ORIGINAL RENDERING WITH ONE PIPELINE
 		gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_pipeline(), bufferFrame);
 		commandBuffer = gf3d_command_rendering_begin(bufferFrame);
 
@@ -255,7 +293,7 @@ int main(int argc,char *argv[])
 
 		gf3d_command_rendering_end(commandBuffer);
 
-		gf3d_vgraphics_render_end(bufferFrame);
+		gf3d_vgraphics_render_end(bufferFrame);*/
 
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
     }    

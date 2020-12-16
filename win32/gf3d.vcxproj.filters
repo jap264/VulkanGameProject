@@ -138,6 +138,9 @@
     <ClInclude Include="..\include\gf3d_sprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\gf3d_texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\gfc\simple_json\src\simple_json.c">
@@ -269,5 +272,13 @@
     <ClCompile Include="..\src\gf3d_sprite.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\shaders\sprite.frag">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="..\shaders\sprite.vert">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
