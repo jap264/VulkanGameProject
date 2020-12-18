@@ -16,6 +16,7 @@ void sounds_init()
 	sounds->_playerhit = gfc_sound_load("sounds/playerHit.wav", 1, 0);
 	sounds->_enemyhit = gfc_sound_load("sounds/enemyHit.wav", 1, 0);
 	sounds->_teleport = gfc_sound_load("sounds/teleport.wav", 1, 0);
+	sounds->_doground = gfc_sound_load("sounds/dogRound.wav", 1, 0);
 }
 
 void sounds_play_gamesound()
@@ -36,4 +37,9 @@ void sounds_play_enemyhit()
 void sounds_play_teleport()
 {
 	gfc_sound_play(sounds->_teleport, 0, 1, 4, -1);
+}
+
+void sounds_play_doground()
+{
+	gfc_sound_play(sounds->_doground, 0, 1, 5, -1);
 }

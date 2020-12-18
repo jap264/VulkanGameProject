@@ -162,8 +162,10 @@ void gf3d_entity_think_all()
 				{
 					gf3d_entity_free(&gf3d_entity.entity_list[x]);
 					sounds_play_enemyhit();
-					get_player()->points += 1;
+					get_player()->points += (1 * get_player()->combo);
 				}
+
+				else if (gf3d_entity.entity_list[i].type == 6 || gf3d_entity.entity_list[x].type == 6) continue; //ignore dog collisions with other enemies
 
 				else //two enemies colliding
 				{
@@ -174,7 +176,8 @@ void gf3d_entity_think_all()
 					gf3d_entity_free(&gf3d_entity.entity_list[x]);
 					gf3d_entity_free(&gf3d_entity.entity_list[i]);
 					powerup_init();
-					get_player()->points += 2;
+					get_player()->points += (2 * get_player()->combo);
+					if (get_player()->combo < 5) get_player()->combo += 1;
 				}
 			}
 		}
@@ -185,7 +188,7 @@ void gf3d_entity_draw(Entity *self, Uint32 bufferFrame, VkCommandBuffer commandB
 {
 	if (!self)return;
 	if (!self->model) return;
-	gf3d_model_draw(self->model, bufferFrame, commandBuffer, self->modelMatrix);
+	gf3d_model_draw(self->model, bufferFrame, commandBuffer, self->modelMatrix, 0);
 }
 
 void gf3d_entity_draw_all(Uint32 bufferFrame, VkCommandBuffer commandBuffer)

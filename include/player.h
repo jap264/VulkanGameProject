@@ -10,6 +10,7 @@ typedef struct Player_S
 	int		status;
 	int		hiding;
 	int		points;
+	int		combo;
 
 }Player;
 

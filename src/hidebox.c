@@ -32,6 +32,7 @@ void hidebox_init(Vector3D *position)
 	hidebox->ent->radius = 3;
 
 	hidebox->ent->model = gf3d_model_load("hidebox");
+	hidebox->ent->model->frameCount = 2;
 	hidebox->ent->think = hidebox_think;
 	hidebox->ent->die = hidebox_free;
 }

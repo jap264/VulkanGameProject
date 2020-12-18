@@ -17,6 +17,7 @@
 #include "player.h"
 #include "sounds.h"
 #include "powerup.h"
+#include "enemy_dog.h"
 #include "enemy_cone.h"
 #include "enemy_cube.h"
 #include "enemy_brick.h"
@@ -105,6 +106,7 @@ int main(int argc,char *argv[])
 	//world spawn
 	world = gf3d_entity_new();
 	world->model = gf3d_model_load("world");
+	world->model->frameCount = 2;
 	world->radius = 0;
 
 	//spikebox spawn
@@ -140,11 +142,15 @@ int main(int argc,char *argv[])
 				playerEnt = get_player_entity();
 			}
 
+			get_player()->points = 0;
+			get_player()->combo = 1;
+			get_player()->health = 3;
 			gameOn = 1; //start spawning enemies
 			slog("Good Luck!");
 		}
 
 		if (player->status == 0) gameOn = 0; //player dies, stop spawning entities
+		if (gameOn && SDL_GetTicks() % 30000 == 0) dog_round();
 
 		if (gameOn == 1 && spawnDelay == 0)
 		{
@@ -182,6 +188,13 @@ int main(int argc,char *argv[])
 		}
 
 		//manual enemy spawn
+		if (keys[SDL_SCANCODE_GRAVE] && spawnDelay == 0)
+		{
+			dog_round();
+			spawnDelay = 1000;
+			slog("dog round spawn");
+		}
+
 		if (keys[SDL_SCANCODE_1] && spawnDelay == 0)
 		{
 			brick_init();

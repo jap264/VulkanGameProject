@@ -37,7 +37,7 @@ int swimming = 0;
 int sprintCount = 0;
 int sprintCheck = 0;
 float sprintDistance = 0.12;
-enum type{_player, _powerup, _enemy, _spikebox, _hidebox, _telebox};
+enum type{_player, _powerup, _enemy, _spikebox, _hidebox, _telebox, _dog};
 
 //----------
 //POWERUPS
@@ -69,12 +69,14 @@ void player_init()
 	player->ent->rotation = vector3d(0, 0, 0);
 	player->ent->radius = 2;
 	player->ent->model = gf3d_model_load("dino");
+	player->ent->model->frameCount = 2;
 	player->status = 1;
 	player->hiding = 0;
 	player->ent->think = player_think;
 	player->ent->die = player_free;
 	player->health = 3;
 	player->points = 0;
+	player->combo = 1;
 }
 
 void player_respawn(Player *player)
@@ -102,6 +104,7 @@ void player_respawn(Player *player)
 void player_die()
 {
 	slog("player has died");
+	slog("player score: %i", get_player()->points);
 	player->status = 0;
 	Entity *entList = gf3d_entity_get_list();
 	Uint32 entCount = gf3d_entity_get_entity_count();
@@ -182,7 +185,7 @@ void player_collide(Entity *other)
 	}
 
 	//check if enemy
-	else if (other->type == _enemy)
+	else if (other->type == _enemy || other->type == _dog)
 	{
 		if (pInvinCheck == 0)
 		{
@@ -199,6 +202,7 @@ void player_collide(Entity *other)
 		//free the enemy that collides with the player
 		sounds_play_playerhit();
 		sounds_play_enemyhit();
+		get_player()->combo = 1;
 		gf3d_entity_free(other);
 	}
 

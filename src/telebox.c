@@ -32,6 +32,7 @@ void telebox_init(Vector3D *position)
 	telebox->ent->radius = 10;
 
 	telebox->ent->model = gf3d_model_load("telebox");
+	telebox->ent->model->frameCount = 2;
 	telebox->ent->think = telebox_think;
 	telebox->ent->die = telebox_free;
 }

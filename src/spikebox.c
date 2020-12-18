@@ -32,6 +32,7 @@ void spikebox_init(Vector3D *position)
 	spikebox->ent->radius = 14;
 
 	spikebox->ent->model = gf3d_model_load("spikebox");
+	spikebox->ent->model->frameCount = 2;
 	spikebox->ent->think = spikebox_think;
 	spikebox->ent->die = spikebox_free;
 }

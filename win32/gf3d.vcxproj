@@ -106,6 +106,7 @@
     <ClInclude Include="..\include\enemy_cone.h" />
     <ClInclude Include="..\include\enemy_cube.h" />
     <ClInclude Include="..\include\enemy_cylinder.h" />
+    <ClInclude Include="..\include\enemy_dog.h" />
     <ClInclude Include="..\include\enemy_sphere.h" />
     <ClInclude Include="..\include\gf3d_camera.h" />
     <ClInclude Include="..\include\gf3d_commands.h" />
@@ -148,6 +149,7 @@
     <ClCompile Include="..\src\enemy_cone.c" />
     <ClCompile Include="..\src\enemy_cube.c" />
     <ClCompile Include="..\src\enemy_cylinder.c" />
+    <ClCompile Include="..\src\enemy_dog.c" />
     <ClCompile Include="..\src\enemy_sphere.c" />
     <ClCompile Include="..\src\game.c" />
     <ClCompile Include="..\src\gf3d_camera.c" />
