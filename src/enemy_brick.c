@@ -32,6 +32,7 @@ void brick_init()
 	brick->ent->radius = 10;
 
 	brick->ent->model = gf3d_model_load("brick");
+	brick->ent->model->frameCount = 2;
 	brick->ent->think = brick_think;
 	brick->ent->die = brick_free;
 }

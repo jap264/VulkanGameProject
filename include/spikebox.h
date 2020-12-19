@@ -13,7 +13,7 @@ typedef struct Spikebox_S
 *	@brief allocates memory for spikebox entity
 *	@param position location for box to be spawned
 */
-void spikebox_init(Vector3D *position);
+void spikebox_init(Vector3D position);
 
 /*
 *	@brief initializes the spikebox entity

@@ -53,6 +53,7 @@ void dog_spawn(Vector3D position)
 	dog->ent->radius = 10;
 
 	dog->ent->model = gf3d_model_load("dog");
+	dog->ent->model->frameCount = 2;
 	dog->ent->think = dog_think;
 	dog->ent->die = dog_free;
 }

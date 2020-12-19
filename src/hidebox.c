@@ -13,10 +13,10 @@
 #include "gf3d_entity.h"
 
 static Hidebox *hidebox = { 0 };
-static float rotation = 0;
+static float rotation = 0, frame = 0;
 enum type{ _player, _powerup, _enemy, _spikebox, _hidebox, _telebox};
 
-void hidebox_init(Vector3D *position)
+void hidebox_init(Vector3D position)
 {
 	Hidebox *hidebox;
 	Entity *hideboxEnt = NULL;
@@ -25,14 +25,15 @@ void hidebox_init(Vector3D *position)
 	hidebox->ent = hidebox_new();
 	gfc_word_cpy(hidebox->ent->name, "hidebox");
 	hidebox->ent->type = _hidebox;
-	hidebox->ent->position = *position;
+	hidebox->ent->position = position;
 	gfc_matrix_make_translation(hidebox->ent->modelMatrix, hidebox->ent->position);
 	hidebox->ent->velocity = vector3d(0, 0, 0);
 	hidebox->ent->rotation = vector3d(0, 0, 0);
 	hidebox->ent->radius = 3;
 
-	hidebox->ent->model = gf3d_model_load("hidebox");
-	hidebox->ent->model->frameCount = 2;
+	hidebox->ent->model = gf3d_model_load_animated("hidebox",1,30);
+	gfc_matrix_identity(hidebox->ent->modelMatrix);
+	hidebox->ent->model->frameCount = 30;
 	hidebox->ent->think = hidebox_think;
 	hidebox->ent->die = hidebox_free;
 }
@@ -54,11 +55,14 @@ void hidebox_think(Entity *self)
 {
 	if (!self) return;
 
-	gfc_matrix_rotate(
+	/*frame = frame + 0.05;
+	if (frame >= 24)frame = 0;*/
+	//gf3d_model_draw(self->model, get_bufferframe(), get_commandbuffer(), self->modelMatrix, (Uint32)frame);
+	/*gfc_matrix_rotate(
 		self->modelMatrix,
 		self->modelMatrix,
 		0.0001,
-		vector3d(0, 0, 1));
+		vector3d(0, 0, 1));*/
 }
 
 Entity *get_hidebox_entity()

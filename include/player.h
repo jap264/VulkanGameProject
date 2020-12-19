@@ -7,6 +7,7 @@ typedef struct Player_S
 {
 	Entity *ent;
 	int		health;
+	int		maxHealth;
 	int		status;
 	int		hiding;
 	int		points;

@@ -13,7 +13,7 @@ typedef struct Telebox_S
 *	@brief allocates memory for telebox entity
 *	@param position location for box to be spawned
 */
-void telebox_init(Vector3D *position);
+void telebox_init(Vector3D position);
 
 /*
 *	@brief initializes the telebox entity

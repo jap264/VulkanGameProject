@@ -14,6 +14,7 @@
 #include "gf3d_sprite.h"
 #include "gfc_audio.h"
 
+#include "game.h"
 #include "player.h"
 #include "sounds.h"
 #include "powerup.h"
@@ -23,6 +24,9 @@
 #include "enemy_brick.h"
 #include "enemy_cylinder.h"
 #include "enemy_sphere.h"
+#include "hidebox.h"
+#include "spikebox.h"
+#include "telebox.h"
 
 static int integer(float f)
 {
@@ -35,6 +39,8 @@ static int randNum()
 	return integer(gfc_crandom() * 5 + 5);
 }
 
+static GameManager game_manager = { 0 };
+
 int main(int argc,char *argv[])
 {
     int done = 0;
@@ -44,15 +50,8 @@ int main(int argc,char *argv[])
     const Uint8 * keys;
     Uint32 bufferFrame = 0;
     VkCommandBuffer commandBuffer;
-
-	Model *model = NULL;
-	Matrix4 modelMat;
-	gfc_matrix_identity(modelMat);
-	gfc_matrix_rotate(
-		modelMat,
-		modelMat,
-		M_PI / 2,
-		vector3d(1, 0, 0));
+	game_manager.bufferFrame = bufferFrame;
+	game_manager.commandBuffer = commandBuffer;
 
 	Entity *playerEnt = NULL;
 	Player *player;
@@ -113,7 +112,7 @@ int main(int argc,char *argv[])
 	spikebox_init(vector3d(50, 50, 8));
 
 	////hidebox spawn
-	hidebox_init(vector3d(-50, -50, 8));
+	//hidebox_init(vector3d(-50, -50, 8));
 
 	////telebox spawn
 	telebox_init(vector3d(50, -50, 12));
@@ -128,10 +127,10 @@ int main(int argc,char *argv[])
 		//slog("mouse (%i,%i)",mousex,mousey);
 
 		frame = frame + 0.05;
-		if (frame >= 24) frame = 0;
+		if (frame >= 30) frame = 0;
 		mouseFrame = (mouseFrame + 1) % 16;
 		//update game things here
-		
+
 		gf3d_entity_think_all(); //CALLS ALL THINK FUNCTIONS
 		
 		if (keys[SDL_SCANCODE_RETURN] && gameOn == 0)
@@ -280,11 +279,13 @@ int main(int argc,char *argv[])
 		bufferFrame = gf3d_vgraphics_render_begin();
 
 		// for each mesh, get a command and configure it from the pool
-		gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_model_pipeline(), bufferFrame);
+		gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_model_pipeline(), bufferFrame); 
+		gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_overlay_pipeline(), bufferFrame);
 		//gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_overlay_pipeline(), bufferFrame);
 
 		commandBuffer = gf3d_command_rendering_begin(bufferFrame, gf3d_vgraphics_get_graphics_model_pipeline());
 		gf3d_entity_draw_all(bufferFrame, commandBuffer);
+		//gf3d_model_draw(get_hidebox_entity()->model, bufferFrame, commandBuffer, get_hidebox_entity()->modelMatrix, (Uint32)frame);
 		//gf3d_model_draw(model, bufferFrame, commandBuffer, modelMat, (Uint32)frame);
 
 		gf3d_command_rendering_end(commandBuffer);
@@ -316,6 +317,16 @@ int main(int argc,char *argv[])
     slog("gf3d program end");
     slog_sync();
     return 0;
+}
+
+Uint32 get_bufferframe()
+{
+	return game_manager.bufferFrame;
+}
+
+VkCommandBuffer get_commandbuffer()
+{
+	return game_manager.commandBuffer;
 }
 
 /*eol@eof*/

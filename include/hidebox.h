@@ -13,7 +13,7 @@ typedef struct Hidebox_S
 *	@brief allocates memory for hidebox entity
 *	@param position location for box to be spawned
 */
-void hidebox_init(Vector3D *position);
+void hidebox_init(Vector3D position);
 
 /*
 *	@brief initializes the hidebox entity

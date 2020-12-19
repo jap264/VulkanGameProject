@@ -32,6 +32,7 @@ void cylinder_init()
 	cylinder->ent->radius = 10;
 
 	cylinder->ent->model = gf3d_model_load("cylinder");
+	cylinder->ent->model->frameCount = 2;
 	cylinder->ent->think = cylinder_think;
 	cylinder->ent->die = cylinder_free;
 }

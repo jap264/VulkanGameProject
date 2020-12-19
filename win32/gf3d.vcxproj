@@ -108,6 +108,7 @@
     <ClInclude Include="..\include\enemy_cylinder.h" />
     <ClInclude Include="..\include\enemy_dog.h" />
     <ClInclude Include="..\include\enemy_sphere.h" />
+    <ClInclude Include="..\include\game.h" />
     <ClInclude Include="..\include\gf3d_camera.h" />
     <ClInclude Include="..\include\gf3d_commands.h" />
     <ClInclude Include="..\include\gf3d_entity.h" />

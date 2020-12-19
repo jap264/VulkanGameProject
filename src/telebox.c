@@ -16,7 +16,7 @@ static Telebox *telebox = { 0 };
 static float rotation = 0;
 enum type{ _player, _powerup, _enemy, _spikebox, _hidebox, _telebox};
 
-void telebox_init(Vector3D *position)
+void telebox_init(Vector3D position)
 {
 	Telebox *telebox;
 	Entity *teleboxEnt = NULL;
@@ -25,7 +25,7 @@ void telebox_init(Vector3D *position)
 	telebox->ent = telebox_new();
 	gfc_word_cpy(telebox->ent->name, "telebox");
 	telebox->ent->type = _telebox;
-	telebox->ent->position = *position;
+	telebox->ent->position = position;
 	gfc_matrix_make_translation(telebox->ent->modelMatrix, telebox->ent->position);
 	telebox->ent->velocity = vector3d(0, 0, 0);
 	telebox->ent->rotation = vector3d(0, 0, 0);
@@ -54,11 +54,11 @@ void telebox_think(Entity *self)
 {
 	if (!self) return;
 
-	gfc_matrix_rotate(
+	/*gfc_matrix_rotate(
 		self->modelMatrix,
 		self->modelMatrix,
 		0.0004,
-		vector3d(0, 0, 1));
+		vector3d(0, 0, 1));*/
 }
 
 Entity *get_telebox_entity()

@@ -75,6 +75,7 @@ void player_init()
 	player->ent->think = player_think;
 	player->ent->die = player_free;
 	player->health = 3;
+	player->maxHealth = 3;
 	player->points = 0;
 	player->combo = 1;
 }
@@ -95,6 +96,7 @@ void player_respawn(Player *player)
 	player->ent->rotation = vector3d(0, 0, 0);
 	player->ent->radius = 2;
 	player->ent->model = gf3d_model_load("dino");
+	player->ent->model->frameCount = 2;
 	player->status = 1;
 	player->ent->think = player_think;
 	player->ent->die = player_free;
@@ -146,9 +148,9 @@ void player_collide(Entity *other)
 		if (other->pType == pHealth)
 		{
 			//check max health
-			if (player->health < 3) player->health += 1;
+			if (player->health < player->maxHealth) player->health += 1;
 			slog("health picked up, health: %i", player->health);
-			if (player->health == 3) slog("player has max health!");
+			if (player->health == player->maxHealth) slog("player has max health!");
 		}
 
 		else if (other->pType == pSpeed)

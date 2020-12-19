@@ -16,7 +16,7 @@ static Spikebox *spikebox = { 0 };
 static float rotation = 0;
 enum type{ _player, _powerup, _enemy, _spikebox};
 
-void spikebox_init(Vector3D *position)
+void spikebox_init(Vector3D position)
 {
 	Spikebox *spikebox;
 	Entity *spikeboxEnt = NULL;
@@ -25,7 +25,7 @@ void spikebox_init(Vector3D *position)
 	spikebox->ent = spikebox_new();
 	gfc_word_cpy(spikebox->ent->name, "spikebox");
 	spikebox->ent->type = _spikebox;
-	spikebox->ent->position = *position;
+	spikebox->ent->position = position;
 	gfc_matrix_make_translation(spikebox->ent->modelMatrix, spikebox->ent->position);
 	spikebox->ent->velocity = vector3d(0, 0, 0);
 	spikebox->ent->rotation = vector3d(0, 0, 0);
@@ -54,11 +54,11 @@ void spikebox_think(Entity *self)
 {
 	if (!self) return;
 
-	gfc_matrix_rotate(
+	/*gfc_matrix_rotate(
 		self->modelMatrix,
 		self->modelMatrix,
 		0.0015,
-		vector3d(0, 0, 1));
+		vector3d(0, 0, 1));*/
 }
 
 Entity *get_spikebox_entity()

@@ -32,6 +32,7 @@ void cube_init()
 	cube->ent->radius = 10;
 
 	cube->ent->model = gf3d_model_load("cube");
+	cube->ent->model->frameCount = 2;
 	cube->ent->think = cube_think;
 	cube->ent->die = cube_free;
 }

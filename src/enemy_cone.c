@@ -32,6 +32,7 @@ void cone_init()
 	cone->ent->rotation = vector3d(0, 0, 0);
 	cone->ent->radius = 10;
 	cone->ent->model = gf3d_model_load("cone");
+	cone->ent->model->frameCount = 2;
 	cone->ent->think = cone_think;
 	cone->ent->die = cone_free;
 }

@@ -34,6 +34,7 @@ void sphere_init()
 	sphere->ent->radius = 10;
 
 	sphere->ent->model = gf3d_model_load("sphere");
+	sphere->ent->model->frameCount = 2;
 	sphere->ent->think = sphere_think;
 	sphere->ent->die = sphere_free;
 }
