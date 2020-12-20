@@ -12,6 +12,7 @@ typedef struct Player_S
 	int		hiding;
 	int		points;
 	int		combo;
+	int		enemiesKilled;
 
 }Player;
 

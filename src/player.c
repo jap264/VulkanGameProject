@@ -74,10 +74,11 @@ void player_init()
 	player->hiding = 0;
 	player->ent->think = player_think;
 	player->ent->die = player_free;
-	player->health = 3;
 	player->maxHealth = 3;
+	player->health = player->maxHealth;
 	player->points = 0;
 	player->combo = 1;
+	player->enemiesKilled = 0;
 }
 
 void player_respawn(Player *player)
@@ -100,13 +101,18 @@ void player_respawn(Player *player)
 	player->status = 1;
 	player->ent->think = player_think;
 	player->ent->die = player_free;
-	player->health = 3;
+	player->health = player->maxHealth;
+	player->hiding = 0;
+	player->points = 0;
+	player->combo = 1;
+	player->enemiesKilled = 0;
 }
 
 void player_die()
 {
 	slog("player has died");
 	slog("player score: %i", get_player()->points);
+	slog("enemies killed: %i", get_player()->enemiesKilled);
 	player->status = 0;
 	Entity *entList = gf3d_entity_get_list();
 	Uint32 entCount = gf3d_entity_get_entity_count();
@@ -204,7 +210,9 @@ void player_collide(Entity *other)
 		//free the enemy that collides with the player
 		sounds_play_playerhit();
 		sounds_play_enemyhit();
-		get_player()->combo = 1;
+		player->combo = 1;
+		slog("combo multiplier: %i", player->combo);
+
 		gf3d_entity_free(other);
 	}
 

@@ -19,23 +19,23 @@ enum type{ _player, _powerup, _enemy, _spikebox, _hidebox, _telebox};
 void hidebox_init(Vector3D position)
 {
 	Hidebox *hidebox;
-	Entity *hideboxEnt = NULL;
 	hidebox = (Hidebox *)gfc_allocate_array(sizeof(Hidebox), 1);
 
 	hidebox->ent = hidebox_new();
 	gfc_word_cpy(hidebox->ent->name, "hidebox");
 	hidebox->ent->type = _hidebox;
-	hidebox->ent->position = position;
-	gfc_matrix_make_translation(hidebox->ent->modelMatrix, hidebox->ent->position);
 	hidebox->ent->velocity = vector3d(0, 0, 0);
 	hidebox->ent->rotation = vector3d(0, 0, 0);
 	hidebox->ent->radius = 3;
 
-	hidebox->ent->model = gf3d_model_load_animated("hidebox",1,30);
+	hidebox->ent->model = gf3d_model_load("hidebox");
 	gfc_matrix_identity(hidebox->ent->modelMatrix);
-	hidebox->ent->model->frameCount = 30;
+	hidebox->ent->model->frameCount = 2;
 	hidebox->ent->think = hidebox_think;
 	hidebox->ent->die = hidebox_free;
+
+	hidebox->ent->position = position;
+	gfc_matrix_make_translation(hidebox->ent->modelMatrix, hidebox->ent->position);
 }
 
 Entity *hidebox_new()

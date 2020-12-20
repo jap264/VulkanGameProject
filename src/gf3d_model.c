@@ -82,7 +82,12 @@ Model * gf3d_model_load_animated(char * filename, Uint32 startFrame, Uint32 endF
 	Model *model;
 	model = gf3d_model_new();
 	int i, count;
-	if (!model)return NULL;
+	if (!model)
+	{
+		slog("boogers");
+		return NULL;
+	}
+
 	count = endFrame - startFrame;
 	if (count <= 0)
 	{

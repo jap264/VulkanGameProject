@@ -1,6 +1,7 @@
 #include <SDL.h>            
 
 #include "simple_logger.h"
+#include "simple_json.h"
 #include "gfc_vector.h"
 #include "gfc_matrix.h"
 
@@ -58,6 +59,11 @@ int main(int argc,char *argv[])
 
 	Entity *world = NULL;
 
+	/*Entity *hidebox = NULL;
+	hidebox->model = gf3d_model_load_animated("hidebox", 1, 30);
+	hidebox->model->frameCount = 30;
+	gfc_matrix_identity(hidebox->modelMatrix);*/
+
 	Sprite *mouse = NULL;
 	int mousex, mousey;
 	Uint32 mouseFrame = 0;
@@ -108,14 +114,44 @@ int main(int argc,char *argv[])
 	world->model->frameCount = 2;
 	world->radius = 0;
 
-	//spikebox spawn
-	spikebox_init(vector3d(50, 50, 8));
+	SJson *cfgFile = sj_load("cfg/config.json");
 
-	////hidebox spawn
-	//hidebox_init(vector3d(-50, -50, 8));
+	if (!cfgFile){
+		spikebox_init(vector3d(50, 50, 8));
+		telebox_init(vector3d(50, -50, 12));
+		hidebox_init(vector3d(-50, -50, 8));
+		slog("no config file found");
+	}
 
-	////telebox spawn
-	telebox_init(vector3d(50, -50, 12));
+	else{
+		slog("config file found!");
+		SJson *bArray_config = sj_object_get_value(cfgFile, "Boxes");
+		SJson *config_box_data;
+		Vector3D spikebox_pos, telebox_pos, hidebox_pos;
+
+		for (int i = 0; i < sj_array_get_count(bArray_config); i++)
+		{
+			config_box_data = sj_array_get_nth(bArray_config, i);
+			//sj_echo(config_box_data);
+			SJson *config_position_values = sj_object_get_value(config_box_data, "Position");
+			SJson *position;
+			float posx, posy, posz;
+			
+			for (int x = 0; x < sj_array_get_count(config_position_values); x++)
+			{
+				position = sj_array_get_nth(config_position_values, x);
+				//sj_echo(position);
+				if (x == 0) sj_get_float_value(position, &posx);
+				else if (x == 1) sj_get_float_value(position, &posy);
+				else sj_get_float_value(position, &posz);
+			}
+
+			if (i == 0) hidebox_init(vector3d(posx, posy, posz));
+			else if (i == 1) spikebox_init(vector3d(posx, posy, posz));
+			else telebox_init(vector3d(posx, posy, posz));
+		}
+		slog("pulled config values for boxes");
+	}
 
     while(!done)
     {
@@ -281,11 +317,10 @@ int main(int argc,char *argv[])
 		// for each mesh, get a command and configure it from the pool
 		gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_model_pipeline(), bufferFrame); 
 		gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_overlay_pipeline(), bufferFrame);
-		//gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_overlay_pipeline(), bufferFrame);
 
 		commandBuffer = gf3d_command_rendering_begin(bufferFrame, gf3d_vgraphics_get_graphics_model_pipeline());
 		gf3d_entity_draw_all(bufferFrame, commandBuffer);
-		//gf3d_model_draw(get_hidebox_entity()->model, bufferFrame, commandBuffer, get_hidebox_entity()->modelMatrix, (Uint32)frame);
+		//gf3d_model_draw(&hidebox->model, bufferFrame, commandBuffer, hidebox->modelMatrix, (Uint32)frame);
 		//gf3d_model_draw(model, bufferFrame, commandBuffer, modelMat, (Uint32)frame);
 
 		gf3d_command_rendering_end(commandBuffer);
@@ -296,7 +331,7 @@ int main(int argc,char *argv[])
 		//gf3d_sprite_draw(mouse, vector2d(mousex, mousey), vector2d(1,1), mouseFrame, bufferFrame, commandBuffer);
 
 		gf3d_command_rendering_end(commandBuffer);
-
+		  
 		gf3d_vgraphics_render_end(bufferFrame);
 
 		/* ORIGINAL RENDERING WITH ONE PIPELINE

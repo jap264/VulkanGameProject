@@ -289,5 +289,8 @@
     <None Include="..\shaders\sprite.vert">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="..\cfg\config.json">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

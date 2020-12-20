@@ -1,0 +1,16 @@
+{
+	"Boxes":[
+		{
+		"Name":"Hidebox",
+		"Position":["-50","-50","8"]
+		},
+		{
+		"Name":"Spikebox",
+		"Position":["50","50", "8"]
+		},
+		{
+		"Name":"Telebox",
+		"Position":["50","-50", "8"]
+		}
+	]
+}

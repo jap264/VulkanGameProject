@@ -176,6 +176,7 @@
     <ClCompile Include="..\src\telebox.c" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\cfg\config.json" />
     <None Include="..\shaders\sprite.frag" />
     <None Include="..\shaders\sprite.vert" />
   </ItemGroup>
