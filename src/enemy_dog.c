@@ -84,6 +84,21 @@ void dog_think(Entity *self)
 {
 	if (!self) return;
 	follow(self, get_player_entity(), 0.045);
+	
+	if (self->position.z - 5 > get_player_entity()->position.z)
+	{
+		self->position.z -= 0.035;
+	}
+
+	if (self->position.z - 5 < get_player_entity()->position.z)
+	{
+		self->position.z += 0.035;
+	}
+
+	gfc_matrix_make_translation(
+		self->modelMatrix,
+		self->position
+		);
 
 	rotation -= 0.001;
 

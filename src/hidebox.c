@@ -28,9 +28,11 @@ void hidebox_init(Vector3D position)
 	hidebox->ent->rotation = vector3d(0, 0, 0);
 	hidebox->ent->radius = 3;
 
-	hidebox->ent->model = gf3d_model_load("hidebox");
+	hidebox->ent->model = gf3d_model_load_animated("hidebox", 1, 30);
 	gfc_matrix_identity(hidebox->ent->modelMatrix);
-	hidebox->ent->model->frameCount = 2;
+	hidebox->ent->model->frameCount = 29;
+	hidebox->ent->maxFrames = hidebox->ent->model->frameCount;
+	hidebox->ent->isAnimated = 1;
 	hidebox->ent->think = hidebox_think;
 	hidebox->ent->die = hidebox_free;
 

@@ -31,8 +31,10 @@ void telebox_init(Vector3D position)
 	telebox->ent->rotation = vector3d(0, 0, 0);
 	telebox->ent->radius = 10;
 
-	telebox->ent->model = gf3d_model_load("telebox");
-	telebox->ent->model->frameCount = 2;
+	telebox->ent->model = gf3d_model_load_animated("telebox", 1, 30);
+	telebox->ent->model->frameCount = 29;
+	telebox->ent->maxFrames = telebox->ent->model->frameCount;
+	telebox->ent->isAnimated = 1;
 	telebox->ent->think = telebox_think;
 	telebox->ent->die = telebox_free;
 }
@@ -54,11 +56,11 @@ void telebox_think(Entity *self)
 {
 	if (!self) return;
 
-	/*gfc_matrix_rotate(
+	gfc_matrix_rotate(
 		self->modelMatrix,
 		self->modelMatrix,
 		0.0004,
-		vector3d(0, 0, 1));*/
+		vector3d(0, 0, 1));
 }
 
 Entity *get_telebox_entity()

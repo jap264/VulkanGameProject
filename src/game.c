@@ -4,6 +4,7 @@
 #include "simple_json.h"
 #include "gfc_vector.h"
 #include "gfc_matrix.h"
+#include "gfc_input.h"
 
 #include "gf3d_vgraphics.h"
 #include "gf3d_pipeline.h"
@@ -47,7 +48,7 @@ int main(int argc,char *argv[])
     int done = 0;
 	int a;
     Uint8 validate = 0;
-	float frame = 0;
+	int frame = 0;
     const Uint8 * keys;
     Uint32 bufferFrame = 0;
     VkCommandBuffer commandBuffer;
@@ -96,6 +97,8 @@ int main(int argc,char *argv[])
 	
 	gf3d_entity_init(1024);
 
+	gfc_input_init("");
+
 	//Sounds
 	sounds_init();
 	sounds_play_gamesound();
@@ -112,7 +115,23 @@ int main(int argc,char *argv[])
 	world = gf3d_entity_new();
 	world->model = gf3d_model_load("world");
 	world->model->frameCount = 2;
+	world->isAnimated = 0;
 	world->radius = 0;
+
+	int isMainMenuOpen = 1;
+
+	//Sprites
+	Sprite *main_menu, *pSpeed, *pInv, *pJump, *heart1, *heart2, *heart3, *combo1, *combo2, *combo3;
+	main_menu = gf3d_sprite_load("images/main_menu.png", -1, -1, 0);
+	pSpeed = gf3d_sprite_load("images/powerup_speed.png", -1, -1, 0);
+	pInv = gf3d_sprite_load("images/powerup_invincibility.png", -1, -1, 0);
+	pJump = gf3d_sprite_load("images/powerup_jump.png", -1, -1, 0);
+	heart1 = gf3d_sprite_load("images/heart1.png", -1, -1, 0);
+	heart2 = gf3d_sprite_load("images/heart2.png", -1, -1, 0);
+	heart3 = gf3d_sprite_load("images/heart3.png", -1, -1, 0);
+	combo1 = gf3d_sprite_load("images/combo1.png", -1, -1, 0);
+	combo2 = gf3d_sprite_load("images/combo2.png", -1, -1, 0);
+	combo3 = gf3d_sprite_load("images/combo3.png", -1, -1, 0);
 
 	SJson *cfgFile = sj_load("cfg/config.json");
 
@@ -153,162 +172,170 @@ int main(int argc,char *argv[])
 		slog("pulled config values for boxes");
 	}
 
+	Entity *hidebox = get_hidebox_entity();
+
     while(!done)
     {
-		if (spawnDelay > 0) spawnDelay -= 1;
-
 		SDL_PumpEvents();   // update SDL's internal event structures
-        keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
+		keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
 		SDL_GetMouseState(&mousex, &mousey);
 		//slog("mouse (%i,%i)",mousex,mousey);
+		if (SDL_GetMouseState(NULL, NULL) && SDL_BUTTON(SDL_BUTTON_LEFT)) isMainMenuOpen = 0;
 
-		frame = frame + 0.05;
+		frame = frame + 1;
 		if (frame >= 30) frame = 0;
-		mouseFrame = (mouseFrame + 1) % 16;
-		//update game things here
-
-		gf3d_entity_think_all(); //CALLS ALL THINK FUNCTIONS
 		
-		if (keys[SDL_SCANCODE_RETURN] && gameOn == 0)
+		if (isMainMenuOpen == 0)
 		{
-			if (player->status == 0)
+			if (spawnDelay > 0) spawnDelay -= 1;
+
+			//update game things here
+
+			gf3d_entity_think_all(); //CALLS ALL THINK FUNCTIONS
+
+			if (keys[SDL_SCANCODE_RETURN] && gameOn == 0)
+			{
+				if (player->status == 0)
+				{
+					player_respawn(player);
+					playerEnt = get_player_entity();
+				}
+
+				player->points = 0;
+				player->combo = 1;
+				player->health = 3;
+				gameOn = 1; //start spawning enemies
+				slog("Good Luck!");
+			}
+
+			if (player->status == 0) gameOn = 0; //player dies, stop spawning entities
+			if (gameOn && SDL_GetTicks() % 30000 == 0) dog_round();
+
+			if (gameOn == 1 && spawnDelay == 0)
+			{
+				int rand = randNum(); //picks a rand num 0-9
+
+				if (rand < 2)
+				{
+					brick_init();
+					spawnDelay = 3000;
+				}
+
+				else if (rand == 2 || rand == 3)
+				{
+					cone_init();
+					spawnDelay = 3000;
+				}
+
+				else if (rand == 4 || rand == 5)
+				{
+					cube_init();
+					spawnDelay = 3000;
+				}
+
+				else if (rand == 6 || rand == 7)
+				{
+					cylinder_init();
+					spawnDelay = 3000;
+				}
+
+				else
+				{
+					sphere_init();
+					spawnDelay = 3000;
+				}
+			}
+
+			//manual enemy spawn
+			if (keys[SDL_SCANCODE_GRAVE] && spawnDelay == 0)
+			{
+				dog_round();
+				spawnDelay = 1000;
+				slog("dog round spawn");
+			}
+
+			if (keys[SDL_SCANCODE_1] && spawnDelay == 0)
+			{
+				brick_init();
+				spawnDelay = 1000;
+				slog("brick spawn");
+			}
+
+			if (keys[SDL_SCANCODE_2] && spawnDelay == 0)
+			{
+				cone_init();
+				spawnDelay = 1000;
+				slog("cone spawn");
+			}
+
+			if (keys[SDL_SCANCODE_3] && spawnDelay == 0)
+			{
+				cube_init();
+				spawnDelay = 1000;
+				slog("cube spawn");
+			}
+
+			if (keys[SDL_SCANCODE_4] && spawnDelay == 0)
+			{
+				sphere_init();
+				spawnDelay = 1000;
+				slog("sphere spawn");
+			}
+
+			if (keys[SDL_SCANCODE_5] && spawnDelay == 0)
+			{
+				cylinder_init();
+				spawnDelay = 1000;
+				slog("cylinder spawn");
+			}
+
+			//manual powerup spawn
+			if (keys[SDL_SCANCODE_6] && spawnDelay == 0)
+			{
+				powerup_health();
+				spawnDelay = 1000;
+				slog("health powerup spawn");
+			}
+
+			if (keys[SDL_SCANCODE_7] && spawnDelay == 0)
+			{
+				powerup_speed();
+				spawnDelay = 1000;
+				slog("speed powerup spawn");
+			}
+
+			if (keys[SDL_SCANCODE_8] && spawnDelay == 0)
+			{
+				powerup_jump();
+				spawnDelay = 1000;
+				slog("jump powerup spawn");
+			}
+
+			if (keys[SDL_SCANCODE_9] && spawnDelay == 0)
+			{
+				powerup_invincibility();
+				spawnDelay = 1000;
+				slog("invincibility powerup spawn");
+			}
+
+			if (keys[SDL_SCANCODE_0] && spawnDelay == 0)
+			{
+				powerup_nuke();
+				spawnDelay = 1000;
+				slog("nuke powerup spawn");
+			}
+
+			//manual respawn
+			if (keys[SDL_SCANCODE_BACKSPACE] && player->status == 0 && spawnDelay == 0)
 			{
 				player_respawn(player);
 				playerEnt = get_player_entity();
 			}
 
-			get_player()->points = 0;
-			get_player()->combo = 1;
-			get_player()->health = 3;
-			gameOn = 1; //start spawning enemies
-			slog("Good Luck!");
+			gf3d_vgraphics_thirdperson_camera(playerEnt->position);
 		}
 
-		if (player->status == 0) gameOn = 0; //player dies, stop spawning entities
-		if (gameOn && SDL_GetTicks() % 30000 == 0) dog_round();
-
-		if (gameOn == 1 && spawnDelay == 0)
-		{
-			int rand = randNum(); //picks a rand num 0-9
-
-			if (rand < 2)
-			{
-				brick_init();
-				spawnDelay = 3000;
-			}
-
-			else if (rand == 2 || rand == 3)
-			{
-				cone_init();
-				spawnDelay = 3000;
-			}
-
-			else if (rand == 4 || rand == 5)
-			{
-				cube_init();
-				spawnDelay = 3000;
-			}
-
-			else if (rand == 6 || rand == 7)
-			{
-				cylinder_init();
-				spawnDelay = 3000;
-			}
-
-			else
-			{
-				sphere_init();
-				spawnDelay = 3000;
-			}
-		}
-
-		//manual enemy spawn
-		if (keys[SDL_SCANCODE_GRAVE] && spawnDelay == 0)
-		{
-			dog_round();
-			spawnDelay = 1000;
-			slog("dog round spawn");
-		}
-
-		if (keys[SDL_SCANCODE_1] && spawnDelay == 0)
-		{
-			brick_init();
-			spawnDelay = 1000;
-			slog("brick spawn");
-		}
-
-		if (keys[SDL_SCANCODE_2] && spawnDelay == 0)
-		{
-			cone_init();
-			spawnDelay = 1000;
-			slog("cone spawn");
-		}
-		
-		if (keys[SDL_SCANCODE_3] && spawnDelay == 0)
-		{
-			cube_init();
-			spawnDelay = 1000;
-			slog("cube spawn");
-		}
-		
-		if (keys[SDL_SCANCODE_4] && spawnDelay == 0)
-		{
-			sphere_init();
-			spawnDelay = 1000;
-			slog("sphere spawn");
-		}
-		
-		if (keys[SDL_SCANCODE_5] && spawnDelay == 0)
-		{
-			cylinder_init();
-			spawnDelay = 1000;
-			slog("cylinder spawn");
-		}
-
-		//manual powerup spawn
-		if (keys[SDL_SCANCODE_6] && spawnDelay == 0)
-		{
-			powerup_health();
-			spawnDelay = 1000;
-			slog("health powerup spawn");
-		}
-
-		if (keys[SDL_SCANCODE_7] && spawnDelay == 0)
-		{
-			powerup_speed();
-			spawnDelay = 1000;
-			slog("speed powerup spawn");
-		}
-
-		if (keys[SDL_SCANCODE_8] && spawnDelay == 0)
-		{
-			powerup_jump();
-			spawnDelay = 1000;
-			slog("jump powerup spawn");
-		}
-
-		if (keys[SDL_SCANCODE_9] && spawnDelay == 0)
-		{
-			powerup_invincibility();
-			spawnDelay = 1000;
-			slog("invincibility powerup spawn");
-		}
-
-		if (keys[SDL_SCANCODE_0] && spawnDelay == 0)
-		{
-			powerup_nuke();
-			spawnDelay = 1000;
-			slog("nuke powerup spawn");
-		}
-
-		//manual respawn
-		if (keys[SDL_SCANCODE_BACKSPACE] && player->status == 0 && spawnDelay == 0)
-		{
-			player_respawn(player);
-			playerEnt = get_player_entity();
-		}
-
-		gf3d_vgraphics_thirdperson_camera(playerEnt->position);
+		else gf3d_vgraphics_thirdperson_camera(vector3d(300,300,300));
 
 		// configure render command for graphics command pool
 		// for each mesh, get a command and configure it from the pool
@@ -320,15 +347,27 @@ int main(int argc,char *argv[])
 
 		commandBuffer = gf3d_command_rendering_begin(bufferFrame, gf3d_vgraphics_get_graphics_model_pipeline());
 		gf3d_entity_draw_all(bufferFrame, commandBuffer);
-		//gf3d_model_draw(&hidebox->model, bufferFrame, commandBuffer, hidebox->modelMatrix, (Uint32)frame);
-		//gf3d_model_draw(model, bufferFrame, commandBuffer, modelMat, (Uint32)frame);
 
 		gf3d_command_rendering_end(commandBuffer);
 		
 		// 2D overlay rendering
 		commandBuffer = gf3d_command_rendering_begin(bufferFrame, gf3d_vgraphics_get_graphics_overlay_pipeline());
+		
+		if (isMainMenuOpen == 1) gf3d_sprite_draw(main_menu, vector2d(435, 300), vector2d(1.74, 1.74), frame, bufferFrame, commandBuffer);
+	    if (player->isInvActive) gf3d_sprite_draw(pInv, vector2d(600, -290), vector2d(.15, .15), frame, bufferFrame, commandBuffer);
+		if (player->isJumpActive) gf3d_sprite_draw(pJump, vector2d(520, -290), vector2d(.15, .15), frame, bufferFrame, commandBuffer);
+		if (player->isSpeedActive) gf3d_sprite_draw(pSpeed, vector2d(440, -290), vector2d(.15, .15), frame, bufferFrame, commandBuffer);
 
-		//gf3d_sprite_draw(mouse, vector2d(mousex, mousey), vector2d(1,1), mouseFrame, bufferFrame, commandBuffer);
+		if (isMainMenuOpen == 0)
+		{
+			if (player->health > 0) gf3d_sprite_draw(heart1, vector2d(-535, 325), vector2d(.1, .1), frame, bufferFrame, commandBuffer);
+			if (player->health > 1) gf3d_sprite_draw(heart2, vector2d(-475, 325), vector2d(.1, .1), frame, bufferFrame, commandBuffer);
+			if (player->health > 2) gf3d_sprite_draw(heart3, vector2d(-415, 325), vector2d(.1, .1), frame, bufferFrame, commandBuffer);
+			if (player->combo == 1) gf3d_sprite_draw(combo1, vector2d(605, 320), vector2d(.15, .15), frame, bufferFrame, commandBuffer);
+			if (player->combo == 2) gf3d_sprite_draw(combo2, vector2d(605, 320), vector2d(.15, .15), frame, bufferFrame, commandBuffer);
+			if (player->combo == 3) gf3d_sprite_draw(combo3, vector2d(605, 320), vector2d(.15, .15), frame, bufferFrame, commandBuffer);
+
+		}
 
 		gf3d_command_rendering_end(commandBuffer);
 		  

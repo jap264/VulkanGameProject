@@ -4,6 +4,7 @@
 #include "player.h"
 #include "powerup.h"
 #include "sounds.h"
+#include "explosion.h"
 
 typedef struct
 {
@@ -182,7 +183,7 @@ void gf3d_entity_think_all()
 					powerup_init();
 					get_player()->enemiesKilled += 2;
 					get_player()->points += (2 * get_player()->combo);
-					if (get_player()->combo < 5) get_player()->combo += 1;
+					if (get_player()->combo < 3) get_player()->combo += 1;
 					slog("combo multiplier: %i", get_player()->combo);
 				}
 			}
@@ -194,8 +195,18 @@ void gf3d_entity_draw(Entity *self, Uint32 bufferFrame, VkCommandBuffer commandB
 {
 	if (!self)return;
 	if (!self->model) return;
-	if (self->model->frameCount > 2) return;
-	gf3d_model_draw(self->model, bufferFrame, commandBuffer, self->modelMatrix, 0);
+	if (self->isAnimated == 1)
+	{
+		if (self->maxFrames == NULL) self->maxFrames = 0;
+		if (SDL_GetTicks() % 100 == 0) self->currFrame += 1;
+		if (self->currFrame >= self->maxFrames) self->currFrame = 0;
+		gf3d_model_draw(self->model, bufferFrame, commandBuffer, self->modelMatrix, self->currFrame);
+	}
+	
+	else
+	{
+		gf3d_model_draw(self->model, bufferFrame, commandBuffer, self->modelMatrix, 0);
+	}
 }
 
 void gf3d_entity_draw_all(Uint32 bufferFrame, VkCommandBuffer commandBuffer)

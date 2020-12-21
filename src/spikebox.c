@@ -31,8 +31,10 @@ void spikebox_init(Vector3D position)
 	spikebox->ent->rotation = vector3d(0, 0, 0);
 	spikebox->ent->radius = 14;
 
-	spikebox->ent->model = gf3d_model_load("spikebox");
-	spikebox->ent->model->frameCount = 2;
+	spikebox->ent->model = gf3d_model_load_animated("spikebox", 1, 20);
+	spikebox->ent->model->frameCount = 19;
+	spikebox->ent->isAnimated = 1;
+	spikebox->ent->maxFrames = spikebox->ent->model->frameCount;
 	spikebox->ent->think = spikebox_think;
 	spikebox->ent->die = spikebox_free;
 }
@@ -54,11 +56,11 @@ void spikebox_think(Entity *self)
 {
 	if (!self) return;
 
-	/*gfc_matrix_rotate(
+	gfc_matrix_rotate(
 		self->modelMatrix,
 		self->modelMatrix,
 		0.0015,
-		vector3d(0, 0, 1));*/
+		vector3d(0, 0, 1));
 }
 
 Entity *get_spikebox_entity()

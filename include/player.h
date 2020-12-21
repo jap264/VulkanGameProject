@@ -13,6 +13,9 @@ typedef struct Player_S
 	int		points;
 	int		combo;
 	int		enemiesKilled;
+	int		isSpeedActive;
+	int		isJumpActive;
+	int		isInvActive;
 
 }Player;
 

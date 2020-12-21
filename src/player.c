@@ -9,9 +9,11 @@
 #include "gfc_vector.h"
 
 #include "gf3d_entity.h"
+#include "gf3d_sprite.h"
 
 #include "player.h"
 #include "powerup.h"
+#include "explosion.h"
 
 #include "enemy_brick.h"
 #include "enemy_cone.h"
@@ -69,6 +71,7 @@ void player_init()
 	player->ent->rotation = vector3d(0, 0, 0);
 	player->ent->radius = 2;
 	player->ent->model = gf3d_model_load("dino");
+	player->ent->isAnimated = 0;
 	player->ent->model->frameCount = 2;
 	player->status = 1;
 	player->hiding = 0;
@@ -79,6 +82,9 @@ void player_init()
 	player->points = 0;
 	player->combo = 1;
 	player->enemiesKilled = 0;
+	player->isInvActive = 0;
+	player->isJumpActive = 0;
+	player->isSpeedActive = 0;
 }
 
 void player_respawn(Player *player)
@@ -106,6 +112,9 @@ void player_respawn(Player *player)
 	player->points = 0;
 	player->combo = 1;
 	player->enemiesKilled = 0;
+	player->isInvActive = 0;
+	player->isJumpActive = 0;
+	player->isSpeedActive = 0;
 }
 
 void player_die()
@@ -114,6 +123,7 @@ void player_die()
 	slog("player score: %i", get_player()->points);
 	slog("enemies killed: %i", get_player()->enemiesKilled);
 	player->status = 0;
+	player->health = 0;
 	Entity *entList = gf3d_entity_get_list();
 	Uint32 entCount = gf3d_entity_get_entity_count();
 	for (Uint32 x = 0; x < entCount; x++)
@@ -162,18 +172,22 @@ void player_collide(Entity *other)
 		else if (other->pType == pSpeed)
 		{
 			pSpeedCheck = 1;
+			player->isSpeedActive = 1;
 			pSpeedDuration = 20000;
 		}
 
 		else if (other->pType == pJump)
 		{
 			pJumpCheck = 1;
+			player->isJumpActive = 1;
 			pJumpDuration = 20000;
 		}
 
 		else if (other->pType == pInvincibility)
 		{
 			pInvinCheck = 1;
+			player->isInvActive = 1;
+			slog("picked up invinc");
 			pInvinDuration = 20000;
 		}
 
@@ -212,7 +226,9 @@ void player_collide(Entity *other)
 		sounds_play_enemyhit();
 		player->combo = 1;
 		slog("combo multiplier: %i", player->combo);
-
+		Vector3D pos = other->position;
+		pos.z -= 1;
+		explosion_init(pos);
 		gf3d_entity_free(other);
 	}
 
@@ -305,6 +321,7 @@ void player_think(Entity *self)
 	{
 		pSpeedMultiplier = 1;
 		pSpeedCheck = 0;
+		player->isSpeedActive = 0;
 		//slog("speed powerup finished!");
 	}
 
@@ -319,6 +336,7 @@ void player_think(Entity *self)
 	{
 		pJumpMultiplier = 1;
 		pJumpCheck = 0;
+		player->isJumpActive = 0;
 	}
 
 	if (pInvinDuration > 0) //Invincibility Powerup
@@ -327,8 +345,11 @@ void player_think(Entity *self)
 		//slog("%i", pInvinDuration);
 	}
 
-	if (pInvinDuration == 0) pInvinCheck = 0;
-
+	if (pInvinDuration == 0)
+	{
+		player->isInvActive = 0;
+		pInvinCheck = 0;
+	}
 	//-----------------------------------
 	//DELAYS
 	//-----------------------------------

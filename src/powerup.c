@@ -44,6 +44,7 @@ void powerup_spawn(Powerup *powerup)
 	{
 		powerup->ent->model = gf3d_model_load("powerup_health");
 		powerup->ent->model->frameCount = 2;
+		powerup->ent->maxFrames = powerup->ent->model->frameCount;
 		gfc_word_cpy(powerup->ent->name, "powerup_health");
 		powerup->ent->pType = health;
 		powerup->ent->position = vector3d(-10, -6, 10); //top
@@ -53,6 +54,7 @@ void powerup_spawn(Powerup *powerup)
 	{
 		powerup->ent->model = gf3d_model_load("powerup_speed");
 		powerup->ent->model->frameCount = 2;
+		powerup->ent->maxFrames = powerup->ent->model->frameCount;
 		gfc_word_cpy(powerup->ent->name, "powerup_speed");
 		powerup->ent->pType = speed;
 		powerup->ent->position = vector3d(-12, -8, 10); //left
@@ -62,6 +64,7 @@ void powerup_spawn(Powerup *powerup)
 	{
 		powerup->ent->model = gf3d_model_load("powerup_jump");
 		powerup->ent->model->frameCount = 2;
+		powerup->ent->maxFrames = powerup->ent->model->frameCount;
 		gfc_word_cpy(powerup->ent->name, "powerup_jump");
 		powerup->ent->pType = jump;
 		powerup->ent->position = vector3d(-11, -10, 10); //bottom left
@@ -71,6 +74,7 @@ void powerup_spawn(Powerup *powerup)
 	{
 		powerup->ent->model = gf3d_model_load("powerup_invincibility");
 		powerup->ent->model->frameCount = 2;
+		powerup->ent->maxFrames = powerup->ent->model->frameCount;
 		gfc_word_cpy(powerup->ent->name, "powerup_invincibility");
 		powerup->ent->pType = invincibility;
 		powerup->ent->position = vector3d(-9, -10, 10); //bottom right
@@ -80,6 +84,7 @@ void powerup_spawn(Powerup *powerup)
 	{
 		powerup->ent->model = gf3d_model_load("powerup_nuke");
 		powerup->ent->model->frameCount = 2;
+		powerup->ent->maxFrames = powerup->ent->model->frameCount;
 		gfc_word_cpy(powerup->ent->name, "powerup_nuke");
 		powerup->ent->pType = nuke;
 		powerup->ent->position = vector3d(-8, -8, 10); //right
@@ -99,6 +104,8 @@ void powerup_health()
 	powerup->ent->radius = 3;
 	powerup->ent->model = gf3d_model_load("powerup_health");
 	gfc_word_cpy(powerup->ent->name, "powerup_health");
+	powerup->ent->model->frameCount = 2;
+	powerup->ent->maxFrames = powerup->ent->model->frameCount;
 	powerup->ent->pType = health;
 	powerup->ent->position = vector3d(-10, -6, 10);
 	gfc_matrix_make_translation(powerup->ent->modelMatrix, powerup->ent->position);
@@ -118,6 +125,8 @@ void powerup_speed()
 	powerup->ent->radius = 3;
 	powerup->ent->model = gf3d_model_load("powerup_speed");
 	gfc_word_cpy(powerup->ent->name, "powerup_speed");
+	powerup->ent->model->frameCount = 2;
+	powerup->ent->maxFrames = powerup->ent->model->frameCount;
 	powerup->ent->pType = speed;
 	powerup->ent->position = vector3d(-12, -8, 10);
 	gfc_matrix_make_translation(powerup->ent->modelMatrix, powerup->ent->position);
@@ -137,6 +146,8 @@ void powerup_jump()
 	powerup->ent->radius = 3;
 	powerup->ent->model = gf3d_model_load("powerup_jump");
 	gfc_word_cpy(powerup->ent->name, "powerup_jump");
+	powerup->ent->model->frameCount = 2;
+	powerup->ent->maxFrames = powerup->ent->model->frameCount;
 	powerup->ent->pType = jump;
 	powerup->ent->position = vector3d(-11, -10, 10);
 	gfc_matrix_make_translation(powerup->ent->modelMatrix, powerup->ent->position);
@@ -156,6 +167,8 @@ void powerup_invincibility()
 	powerup->ent->radius = 3;
 	powerup->ent->model = gf3d_model_load("powerup_invincibility");
 	gfc_word_cpy(powerup->ent->name, "powerup_invincibility");
+	powerup->ent->model->frameCount = 2;
+	powerup->ent->maxFrames = powerup->ent->model->frameCount;
 	powerup->ent->pType = invincibility;
 	powerup->ent->position = vector3d(-9, -10, 10);
 	gfc_matrix_make_translation(powerup->ent->modelMatrix, powerup->ent->position);
@@ -175,6 +188,8 @@ void powerup_nuke()
 	powerup->ent->radius = 3;
 	powerup->ent->model = gf3d_model_load("powerup_nuke");
 	gfc_word_cpy(powerup->ent->name, "powerup_nuke");
+	powerup->ent->model->frameCount = 2;
+	powerup->ent->maxFrames = powerup->ent->model->frameCount;
 	powerup->ent->pType = nuke;
 	powerup->ent->position = vector3d(-8, -8, 10);
 	gfc_matrix_make_translation(powerup->ent->modelMatrix, powerup->ent->position);

@@ -17,6 +17,10 @@ typedef struct Entity_S
 	int			type;
 	int			pType;
 	Model		*model;
+	Uint32		currFrame;
+	Uint32		maxFrames;
+	int			isAnimated;
+	int			timeToLive;
 	Vector3D	position;
 	Vector3D	velocity;
 	Vector3D	rotation;
